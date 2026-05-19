@@ -345,23 +345,24 @@
     }
 
     @media (max-width: 767px) {
-      body { padding: 16px; }
+      body { padding: 16px; align-items: flex-start; }
       #liz-card {
-        height: calc(100vw - 32px); /* quadrado */
+        height: 580px; /* retângulo vertical no mobile */
         border: none;
       }
-      .liz-step { padding: 44px 22px 22px; align-items: flex-start; }
-      .liz-step h2 { font-size: clamp(16px, 4.5vw, 21px); }
-      #step-0 h1 { font-size: clamp(22px, 6vw, 30px); margin-bottom: 10px; }
-      #step-0 p { font-size: 12px; }
-      .liz-divider { margin: 10px 0; }
-      .liz-textarea { min-height: 56px; }
-      .liz-btn-start { padding: 12px 28px; margin-top: 12px; }
-      .liz-actions { margin-top: 12px; }
+      .liz-step { padding: 44px 26px 28px; align-items: flex-start; }
+      .liz-step h2 { font-size: clamp(18px, 4.8vw, 24px); }
+      #step-0 h1 { font-size: clamp(24px, 7vw, 34px); margin-bottom: 12px; }
+      #step-0 p { font-size: 13px; }
+      .liz-divider { margin: 12px 0; }
+      .liz-textarea { min-height: 100px; }
+      .liz-input { font-size: 17px; }
+      .liz-btn-start { padding: 13px 30px; margin-top: 16px; }
+      .liz-actions { margin-top: 16px; }
       .liz-hint { display: none; }
-      .liz-sub { margin-bottom: 14px; font-size: 12px; }
+      .liz-sub { margin-bottom: 16px; font-size: 13px; }
       .liz-label { margin-bottom: 8px; }
-      .liz-welcome-tag { margin-bottom: 10px; }
+      .liz-welcome-tag { margin-bottom: 14px; }
     }
   </style>
 </head>
