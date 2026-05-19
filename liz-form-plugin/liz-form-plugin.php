@@ -61,9 +61,32 @@ function lizform_defaults() {
 
 function lizform_get() {
     $saved = get_option( 'liz_form_settings', [] );
+
+    // Campos de identificação sempre ativos
+    $saved['f_nome_on']   = '1';
+    $saved['f_insta_on']  = '1';
+    $saved['f_email_on']  = '1';
+    $saved['f_cidade_on'] = '1';
+    $saved['f_idade_on']  = '1';
+    $saved['f_prof_on']   = '1';
+
+    // Perguntas sempre ativas com textos corretos
+    $saved['q1_on']   = '1';
+    $saved['q1_text'] = 'O que mais te <em>incomoda</em> na forma como você vive hoje?';
+    $saved['q2_on']   = '1';
+    $saved['q2_text'] = 'O que você percebe que continua <em>se repetindo</em> na sua vida, mesmo depois de muitos esforços para mudar?';
+    $saved['q3_on']   = '1';
+    $saved['q3_text'] = 'Qual <em>livro, frase ou experiência</em> mais mudou sua forma de enxergar a si mesma?';
+    $saved['q4_on']   = '1';
+    $saved['q4_text'] = 'O que te fez se interessar pelo <em>(R)Evolução da Palavra?</em>';
+    $saved['q5_on']   = '1';
+    $saved['q5_text'] = 'Se nada mudar nos próximos anos, o que você <em>teme</em> que aconteça com a sua vida?';
+
+    // Redirect sempre configurado
     if ( empty( $saved['redirect_url'] ) ) {
         $saved['redirect_url'] = 'https://pay.unicred.com.br/p/33d529a8c45245fd9f3354ce4e215401';
     }
+
     return wp_parse_args( $saved, lizform_defaults() );
 }
 
