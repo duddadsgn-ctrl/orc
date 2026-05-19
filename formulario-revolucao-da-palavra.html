@@ -9,20 +9,36 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html, body {
-      height: 100%;
-      overflow: hidden;
+    html {
       background: #0A0A0A;
+      min-height: 100%;
     }
 
     body {
       font-family: 'Open Sans', sans-serif;
       color: #fff;
+      background: #0A0A0A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 48px 24px;
+    }
+
+    /* ── Card wrapper ── */
+    #liz-card {
+      position: relative;
+      width: 100%;
+      max-width: 720px;
+      height: 660px;
+      overflow: hidden;
+      border: 1px solid rgba(255,224,109,0.08);
+      flex-shrink: 0;
     }
 
     /* ── Progress bar ── */
     #liz-progress {
-      position: fixed;
+      position: absolute;
       top: 0; left: 0;
       height: 2px;
       background: #FFE06D;
@@ -33,7 +49,7 @@
 
     /* ── Stage ── */
     #liz-stage {
-      position: fixed;
+      position: absolute;
       inset: 0;
       overflow: hidden;
     }
@@ -45,7 +61,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 80px 24px 60px;
+      padding: 48px 52px 36px;
+      overflow-y: auto;
       opacity: 0;
       transform: translateY(40px);
       pointer-events: none;
@@ -67,7 +84,7 @@
     /* ── Content box ── */
     .liz-box {
       width: 100%;
-      max-width: 660px;
+      max-width: 100%;
     }
 
     /* ── Step number ── */
@@ -84,7 +101,7 @@
     /* ── Question ── */
     .liz-step h2 {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(26px, 4.5vw, 46px);
+      font-size: clamp(20px, 2.8vw, 34px);
       font-weight: 600;
       line-height: 1.25;
       color: #fff;
@@ -137,7 +154,7 @@
 
     .liz-textarea {
       resize: none;
-      min-height: 110px;
+      min-height: 88px;
       font-size: 17px;
       line-height: 1.7;
     }
@@ -232,11 +249,11 @@
 
     #step-0 h1 {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(36px, 6vw, 68px);
+      font-size: clamp(26px, 3.2vw, 46px);
       font-weight: 700;
       line-height: 1.15;
       color: #fff;
-      margin-bottom: 22px;
+      margin-bottom: 16px;
     }
 
     #step-0 h1 em {
@@ -245,16 +262,16 @@
     }
 
     .liz-divider {
-      width: 40px;
+      width: 36px;
       height: 1.5px;
       background: #FFE06D;
       opacity: 0.5;
-      margin: 22px 0;
+      margin: 16px 0;
     }
 
     #step-0 p {
-      font-size: 15px;
-      line-height: 1.85;
+      font-size: 14px;
+      line-height: 1.75;
       color: rgba(255,255,255,0.55);
       max-width: 480px;
     }
@@ -266,14 +283,14 @@
       background: #FFE06D;
       color: #0A0A0A;
       border: none;
-      padding: 17px 42px;
+      padding: 14px 36px;
       font-family: 'Open Sans', sans-serif;
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 2.5px;
       text-transform: uppercase;
       cursor: pointer;
-      margin-top: 32px;
+      margin-top: 20px;
       transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
     }
 
@@ -322,29 +339,45 @@
 
     /* ── Background ornament ── */
     .liz-ornament {
-      position: fixed;
+      position: absolute;
       pointer-events: none;
       opacity: 0.035;
     }
 
-    @media (max-width: 600px) {
-      .liz-step { padding: 70px 20px 50px; }
-      .liz-btn-start { padding: 15px 32px; }
+    @media (max-width: 767px) {
+      body { padding: 16px; }
+      #liz-card {
+        height: calc(100vw - 32px); /* quadrado */
+        border: none;
+      }
+      .liz-step { padding: 44px 22px 22px; align-items: flex-start; }
+      .liz-step h2 { font-size: clamp(16px, 4.5vw, 21px); }
+      #step-0 h1 { font-size: clamp(22px, 6vw, 30px); margin-bottom: 10px; }
+      #step-0 p { font-size: 12px; }
+      .liz-divider { margin: 10px 0; }
+      .liz-textarea { min-height: 56px; }
+      .liz-btn-start { padding: 12px 28px; margin-top: 12px; }
+      .liz-actions { margin-top: 12px; }
+      .liz-hint { display: none; }
+      .liz-sub { margin-bottom: 14px; font-size: 12px; }
+      .liz-label { margin-bottom: 8px; }
+      .liz-welcome-tag { margin-bottom: 10px; }
     }
   </style>
 </head>
 <body>
 
+  <div id="liz-card">
   <div id="liz-progress"></div>
 
   <!-- Background ornament -->
-  <svg class="liz-ornament" style="top:-160px;right:-160px;width:600px;height:600px;" viewBox="0 0 600 600" fill="none">
-    <circle cx="300" cy="300" r="260" stroke="#FFE06D" stroke-width="1"/>
-    <circle cx="300" cy="300" r="180" stroke="#FFE06D" stroke-width="0.6"/>
-    <circle cx="300" cy="300" r="100" stroke="#FFE06D" stroke-width="0.4"/>
+  <svg class="liz-ornament" style="top:-160px;right:-160px;width:560px;height:560px;" viewBox="0 0 560 560" fill="none">
+    <circle cx="280" cy="280" r="240" stroke="#FFE06D" stroke-width="1"/>
+    <circle cx="280" cy="280" r="165" stroke="#FFE06D" stroke-width="0.6"/>
+    <circle cx="280" cy="280" r="90"  stroke="#FFE06D" stroke-width="0.4"/>
   </svg>
-  <svg class="liz-ornament" style="bottom:-100px;left:-100px;width:350px;height:350px;" viewBox="0 0 350 350" fill="none">
-    <circle cx="175" cy="175" r="140" stroke="#FFE06D" stroke-width="0.6"/>
+  <svg class="liz-ornament" style="bottom:-80px;left:-80px;width:300px;height:300px;" viewBox="0 0 300 300" fill="none">
+    <circle cx="150" cy="150" r="120" stroke="#FFE06D" stroke-width="0.6"/>
   </svg>
 
   <div id="liz-stage">
@@ -574,6 +607,7 @@
     </div>
 
   </div><!-- /#liz-stage -->
+  </div><!-- /#liz-card -->
 
   <script>
   (function () {

@@ -18,12 +18,15 @@
 /* ── Wrapper ── */
 #liz-form {
   position: relative;
-  width: 100%;
-  min-height: 100vh;
+  width: calc(100% - 48px);
+  max-width: 720px;
+  height: 660px;
+  margin: 48px auto;
   background: #0A0A0A;
   overflow: hidden;
   font-family: 'Open Sans', sans-serif;
   color: #fff;
+  border: 1px solid rgba(255,224,109,0.08);
 }
 
 /* ── Barra de progresso ── */
@@ -44,7 +47,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 80px 28px 60px;
+  padding: 48px 52px 36px;
+  overflow-y: auto;
   opacity: 0;
   transform: translateY(40px);
   pointer-events: none;
@@ -54,7 +58,7 @@
 #liz-form .lf-step.exit    { opacity: 0; transform: translateY(-40px); pointer-events: none; }
 
 /* ── Content box ── */
-#liz-form .lf-box { width: 100%; max-width: 660px; }
+#liz-form .lf-box { width: 100%; max-width: 100%; }
 
 /* ── Labels ── */
 #liz-form .lf-label {
@@ -66,7 +70,7 @@
 /* ── H2 ── */
 #liz-form h2 {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(24px, 4vw, 44px);
+  font-size: clamp(20px, 2.8vw, 34px);
   font-weight: 600; line-height: 1.25;
   color: #fff; margin-bottom: 10px;
 }
@@ -94,7 +98,7 @@
 #liz-form .lf-textarea:focus { border-bottom-color: #FFE06D; }
 #liz-form .lf-input::placeholder,
 #liz-form .lf-textarea::placeholder { color: rgba(255,255,255,0.22); font-size: 16px; }
-#liz-form .lf-textarea { resize: none; min-height: 110px; font-size: 16px; line-height: 1.7; }
+#liz-form .lf-textarea { resize: none; min-height: 88px; font-size: 16px; line-height: 1.7; }
 
 /* ── Error ── */
 #liz-form .lf-err {
@@ -142,18 +146,18 @@
 }
 #liz-form #lf0 h1 {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(32px, 5.5vw, 64px);
+  font-size: clamp(26px, 3.2vw, 46px);
   font-weight: 700; line-height: 1.15;
-  color: #fff; margin-bottom: 22px;
+  color: #fff; margin-bottom: 16px;
 }
 #liz-form #lf0 h1 em { color: #FFE06D; font-style: italic; }
-#liz-form .lf-divider { width: 40px; height: 1.5px; background: #FFE06D; opacity: 0.5; margin: 22px 0; }
-#liz-form #lf0 p { font-size: 15px; line-height: 1.85; color: rgba(255,255,255,0.55); max-width: 480px; }
+#liz-form .lf-divider { width: 36px; height: 1.5px; background: #FFE06D; opacity: 0.5; margin: 16px 0; }
+#liz-form #lf0 p { font-size: 14px; line-height: 1.75; color: rgba(255,255,255,0.55); max-width: 480px; }
 
 #liz-form .lf-start {
   display: inline-flex; align-items: center; gap: 10px;
   background: #FFE06D; color: #0A0A0A; border: none;
-  padding: 17px 42px; margin-top: 32px;
+  padding: 14px 36px; margin-top: 20px;
   font-family: 'Open Sans', sans-serif;
   font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
   cursor: pointer; transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
@@ -179,9 +183,25 @@
 /* ── Ornamento ── */
 #liz-form .lf-orn { position: absolute; pointer-events: none; opacity: 0.035; }
 
-@media (max-width: 600px) {
-  #liz-form .lf-step { padding: 70px 20px 50px; }
-  #liz-form .lf-start { padding: 15px 30px; }
+@media (max-width: 767px) {
+  #liz-form {
+    width: calc(100% - 32px);
+    height: calc(100vw - 32px); /* quadrado: largura = altura */
+    margin: 16px auto;
+    border: none;
+  }
+  #liz-form .lf-step { padding: 36px 24px 24px; align-items: flex-start; padding-top: 52px; }
+  #liz-form h2 { font-size: clamp(17px, 4.5vw, 22px); margin-bottom: 8px; }
+  #liz-form #lf0 h1 { font-size: clamp(22px, 6vw, 30px); margin-bottom: 10px; }
+  #liz-form #lf0 p { font-size: 13px; }
+  #liz-form .lf-divider { margin: 12px 0; }
+  #liz-form .lf-textarea { min-height: 60px; }
+  #liz-form .lf-start { padding: 12px 28px; margin-top: 14px; }
+  #liz-form .lf-actions { margin-top: 14px; }
+  #liz-form .lf-hint { display: none; }
+  #liz-form .lf-sub { margin-bottom: 16px; font-size: 12px; }
+  #liz-form .lf-label { margin-bottom: 8px; }
+  #liz-form .lf-tag { margin-bottom: 12px; }
 }
 </style>
 
