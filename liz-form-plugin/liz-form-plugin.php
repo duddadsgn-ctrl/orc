@@ -530,7 +530,7 @@ function lizform_inject_popup() {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 <style id="liz-form-style">
-#liz-overlay,#liz-overlay *{box-sizing:border-box;margin:0;padding:0}
+#liz-overlay,#liz-overlay *{box-sizing:border-box;margin:0}
 
 #liz-overlay{
   position:fixed;inset:0;z-index:999999;
@@ -565,7 +565,7 @@ function lizform_inject_popup() {
 .lf-step{
   position:absolute;inset:0;
   display:flex;align-items:center;justify-content:center;
-  padding:56px 60px 44px;overflow-y:auto;
+  padding:60px 72px 52px;overflow-y:auto;
   opacity:0;transform:translateY(36px);pointer-events:none;
   transition:opacity .5s ease,transform .5s ease;
 }
@@ -609,12 +609,12 @@ function lizform_inject_popup() {
 }
 .lf-err.show{opacity:1}
 
-.lf-actions{display:flex;align-items:center;gap:24px;margin-top:32px}
+.lf-actions{display:flex;align-items:center;gap:28px;margin-top:40px}
 
 .lf-ok{
   display:inline-flex;align-items:center;gap:10px;
   background:<?= $ac ?>;color:<?= $bt ?>;border:none;
-  padding:15px 36px;font-family:'Open Sans',sans-serif;
+  padding:17px 44px;font-family:'Open Sans',sans-serif;
   font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
   cursor:pointer;transition:background .25s,transform .2s;
 }
@@ -624,7 +624,7 @@ function lizform_inject_popup() {
   background:transparent;border:none;color:rgba(255,255,255,.3);
   font-family:'Open Sans',sans-serif;font-size:11px;
   letter-spacing:1.5px;text-transform:uppercase;
-  cursor:pointer;transition:color .25s;padding:12px 0;
+  cursor:pointer;transition:color .25s;padding:16px 0;
 }
 .lf-back:hover{color:<?= $ac ?>}
 
@@ -652,7 +652,7 @@ function lizform_inject_popup() {
 .lf-start{
   display:inline-flex;align-items:center;gap:12px;
   background:<?= $ac ?>;color:<?= $bt ?>;border:none;
-  padding:17px 48px;margin-top:32px;
+  padding:18px 54px;margin-top:40px;
   font-family:'Open Sans',sans-serif;font-size:11px;font-weight:700;
   letter-spacing:2.5px;text-transform:uppercase;
   cursor:pointer;transition:background .25s,transform .2s,box-shadow .25s;
@@ -672,8 +672,8 @@ function lizform_inject_popup() {
 
 @media(max-width:767px){
   #liz-overlay{padding:0;align-items:flex-end}
-  #liz-modal{max-width:100%;height:auto;min-height:520px;max-height:92vh;border:none;border-top:1px solid rgba(255,224,109,.12);border-radius:0}
-  .lf-step{padding:48px 28px 36px;align-items:flex-start}
+  #liz-modal{max-width:100%;height:auto;min-height:540px;max-height:93vh;border:none;border-top:1px solid rgba(255,224,109,.12)}
+  .lf-step{padding:52px 36px 44px}
   .lf-box h2{font-size:clamp(19px,5vw,26px);margin-bottom:8px}
   #lf0 h1{font-size:clamp(22px,7vw,32px);margin-bottom:10px}
   #lf0 p{font-size:13px}
@@ -683,10 +683,10 @@ function lizform_inject_popup() {
   .lf-sub{margin-bottom:16px;font-size:13px}
   .lf-textarea{min-height:88px}
   .lf-input{font-size:17px}
-  .lf-start{padding:16px 36px;margin-top:24px}
-  .lf-actions{margin-top:28px;gap:20px}
-  .lf-ok{padding:15px 32px}
-  .lf-back{padding:14px 0;font-size:10px}
+  .lf-start{padding:17px 44px;margin-top:32px}
+  .lf-actions{margin-top:36px;gap:24px}
+  .lf-ok{padding:17px 36px}
+  .lf-back{padding:16px 0;font-size:10px}
   .lf-hint{display:none}
 }
 </style>
