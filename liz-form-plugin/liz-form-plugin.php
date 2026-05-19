@@ -609,12 +609,12 @@ function lizform_inject_popup() {
 }
 .lf-err.show{opacity:1}
 
-.lf-actions{display:flex;align-items:center;gap:18px;margin-top:20px}
+.lf-actions{display:flex;align-items:center;gap:24px;margin-top:32px}
 
 .lf-ok{
-  display:inline-flex;align-items:center;gap:8px;
+  display:inline-flex;align-items:center;gap:10px;
   background:<?= $ac ?>;color:<?= $bt ?>;border:none;
-  padding:12px 26px;font-family:'Open Sans',sans-serif;
+  padding:15px 36px;font-family:'Open Sans',sans-serif;
   font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
   cursor:pointer;transition:background .25s,transform .2s;
 }
@@ -624,7 +624,7 @@ function lizform_inject_popup() {
   background:transparent;border:none;color:rgba(255,255,255,.3);
   font-family:'Open Sans',sans-serif;font-size:11px;
   letter-spacing:1.5px;text-transform:uppercase;
-  cursor:pointer;transition:color .25s;padding:0;
+  cursor:pointer;transition:color .25s;padding:12px 0;
 }
 .lf-back:hover{color:<?= $ac ?>}
 
@@ -650,9 +650,9 @@ function lizform_inject_popup() {
 #lf0 p{font-family:'Open Sans',sans-serif;font-size:14px;line-height:1.75;color:rgba(255,255,255,.52)}
 
 .lf-start{
-  display:inline-flex;align-items:center;gap:10px;
+  display:inline-flex;align-items:center;gap:12px;
   background:<?= $ac ?>;color:<?= $bt ?>;border:none;
-  padding:14px 36px;margin-top:18px;
+  padding:17px 48px;margin-top:32px;
   font-family:'Open Sans',sans-serif;font-size:11px;font-weight:700;
   letter-spacing:2.5px;text-transform:uppercase;
   cursor:pointer;transition:background .25s,transform .2s,box-shadow .25s;
@@ -671,20 +671,22 @@ function lizform_inject_popup() {
 @keyframes lfpulse{0%,80%,100%{opacity:.22;transform:scale(.7)}40%{opacity:1;transform:scale(1)}}
 
 @media(max-width:767px){
-  #liz-overlay{padding:16px;align-items:flex-end}
-  #liz-modal{max-width:100%;height:580px;border:none;border-top:1px solid rgba(255,224,109,.1)}
-  .lf-step{padding:52px 26px 28px}
+  #liz-overlay{padding:0;align-items:flex-end}
+  #liz-modal{max-width:100%;height:auto;min-height:520px;max-height:92vh;border:none;border-top:1px solid rgba(255,224,109,.12);border-radius:0}
+  .lf-step{padding:48px 28px 36px;align-items:flex-start}
   .lf-box h2{font-size:clamp(19px,5vw,26px);margin-bottom:8px}
-  #lf0 h1{font-size:clamp(24px,7vw,34px);margin-bottom:10px}
+  #lf0 h1{font-size:clamp(22px,7vw,32px);margin-bottom:10px}
   #lf0 p{font-size:13px}
   .lf-divider{margin:10px 0}
   .lf-tag{margin-bottom:12px}
   .lf-label{margin-bottom:8px}
-  .lf-sub{margin-bottom:18px;font-size:13px}
-  .lf-textarea{min-height:80px}
+  .lf-sub{margin-bottom:16px;font-size:13px}
+  .lf-textarea{min-height:88px}
   .lf-input{font-size:17px}
-  .lf-start{padding:13px 30px;margin-top:14px}
-  .lf-actions{margin-top:14px}
+  .lf-start{padding:16px 36px;margin-top:24px}
+  .lf-actions{margin-top:28px;gap:20px}
+  .lf-ok{padding:15px 32px}
+  .lf-back{padding:14px 0;font-size:10px}
   .lf-hint{display:none}
 }
 </style>
