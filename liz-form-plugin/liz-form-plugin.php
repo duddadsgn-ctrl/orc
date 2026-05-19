@@ -471,24 +471,26 @@ function lizform_inject_popup() {
     $steps[] = ['type' => 'welcome'];
 
     $id_defs = [
-        ['key'=>'nome',   'input'=>'text',   'on'=>'f_nome_on',   'q'=>'f_nome_q',   'sub'=>'',          'ph'=>'Escreva seu nome aqui...', 'ac'=>'name',  'err'=>'Por favor, informe seu nome completo.',   'db'=>'nome'],
-        ['key'=>'insta',  'input'=>'text',   'on'=>'f_insta_on',  'q'=>'f_insta_q',  'sub'=>'f_insta_sub','ph'=>'@seuperfil',               'ac'=>'',      'err'=>'Por favor, informe seu Instagram.',       'db'=>'instagram'],
-        ['key'=>'email',  'input'=>'email',  'on'=>'f_email_on',  'q'=>'f_email_q',  'sub'=>'',          'ph'=>'seuemail@exemplo.com',     'ac'=>'email', 'err'=>'Por favor, informe um e-mail válido.',   'db'=>'email'],
-        ['key'=>'cidade', 'input'=>'text',   'on'=>'f_cidade_on', 'q'=>'f_cidade_q', 'sub'=>'',          'ph'=>'Ex: São Paulo, SP',         'ac'=>'',      'err'=>'Por favor, informe sua cidade e estado.','db'=>'cidade'],
-        ['key'=>'idade',  'input'=>'number', 'on'=>'f_idade_on',  'q'=>'f_idade_q',  'sub'=>'',          'ph'=>'Sua idade',                 'ac'=>'',      'err'=>'Por favor, informe sua idade.',           'db'=>'idade'],
-        ['key'=>'prof',   'input'=>'text',   'on'=>'f_prof_on',   'q'=>'f_prof_q',   'sub'=>'',          'ph'=>'Ex: Empreendedora, Terapeuta...','ac'=>'', 'err'=>'Por favor, informe sua profissão.',      'db'=>'profissao'],
+        ['key'=>'nome',   'input'=>'text',   'on'=>'f_nome_on',   'q'=>'f_nome_q',   'sub'=>'',          'ph'=>'Escreva seu nome aqui...', 'ac'=>'name',  'err'=>'Por favor, informe seu nome completo.',   'db'=>'nome',      'err_id'=>'lerr-nome'],
+        ['key'=>'insta',  'input'=>'text',   'on'=>'f_insta_on',  'q'=>'f_insta_q',  'sub'=>'f_insta_sub','ph'=>'@seuperfil',              'ac'=>'',      'err'=>'Por favor, informe seu Instagram.',       'db'=>'instagram', 'err_id'=>'lerr-insta'],
+        ['key'=>'email',  'input'=>'email',  'on'=>'f_email_on',  'q'=>'f_email_q',  'sub'=>'',          'ph'=>'seuemail@exemplo.com',     'ac'=>'email', 'err'=>'Por favor, informe um e-mail válido.',   'db'=>'email',     'err_id'=>'lerr-email'],
+        ['key'=>'cidade', 'input'=>'text',   'on'=>'f_cidade_on', 'q'=>'f_cidade_q', 'sub'=>'',          'ph'=>'Ex: São Paulo, SP',        'ac'=>'',      'err'=>'Por favor, informe sua cidade e estado.','db'=>'cidade',    'err_id'=>'lerr-cidade'],
+        ['key'=>'idade',  'input'=>'number', 'on'=>'f_idade_on',  'q'=>'f_idade_q',  'sub'=>'',          'ph'=>'Sua idade',                'ac'=>'',      'err'=>'Por favor, informe sua idade.',           'db'=>'idade',     'err_id'=>'lerr-idade'],
+        ['key'=>'prof',   'input'=>'text',   'on'=>'f_prof_on',   'q'=>'f_prof_q',   'sub'=>'',          'ph'=>'Ex: Empreendedora, Terapeuta...','ac'=>'', 'err'=>'Por favor, informe sua profissão.',      'db'=>'profissao', 'err_id'=>'lerr-profissao'],
     ];
 
-    $q_map = []; // pergunta_N → step idx para mapeamento JS
-    $id_step_map = []; // key → step idx
+    $q_map = [];
+    $field_num = 0;
 
-    foreach ( $id_defs as $f ) {
+    foreach ( $id_defs as &$f ) {
         if ( ! empty( $s[$f['on']] ) ) {
-            $f['idx'] = count($steps);
-            $id_step_map[$f['key']] = $f['idx'];
+            $field_num++;
+            $f['idx']     = count($steps);
+            $f['num']     = $field_num;
             $steps[] = ['type'=>'field', 'def'=>$f];
         }
     }
+    unset($f);
 
     $q_num = 0;
     for ( $qi = 1; $qi <= 5; $qi++ ) {
@@ -496,22 +498,22 @@ function lizform_inject_popup() {
             $q_num++;
             $idx = count($steps);
             $q_map[$qi] = $idx;
-            $steps[] = ['type'=>'question','num'=>$q_num,'qi'=>$qi,'text'=>$s["q{$qi}_text"],'idx'=>$idx];
+            $steps[] = ['type'=>'question','num'=>$q_num,'qi'=>$qi,'text'=>$s["q{$qi}_text"],'idx'=>$idx,'err_id'=>'lerr-q'.$qi];
         }
     }
 
     $success_idx = count($steps);
     $steps[] = ['type'=>'success'];
-    $total    = $success_idx; // last valid step before success
+    $total = $success_idx;
 
     // ── Validation map para JS ───────────────────────────
     $vmap = [];
     foreach ( $steps as $step ) {
         if ( $step['type'] === 'field' ) {
             $f = $step['def'];
-            $vmap[$f['idx']] = ['el'=>'lf-'.$f['key'], 'err'=>'lerr-'.$f['idx'], 'type'=>$f['input']==='email'?'email':'text'];
+            $vmap[$f['idx']] = ['el'=>'lf-'.$f['key'], 'err'=>$f['err_id'], 'type'=>$f['input']==='email'?'email':'text'];
         } elseif ( $step['type'] === 'question' ) {
-            $vmap[$step['idx']] = ['el'=>'lf-q'.$step['qi'], 'err'=>'lerr-'.$step['idx'], 'type'=>'text'];
+            $vmap[$step['idx']] = ['el'=>'lf-q'.$step['qi'], 'err'=>$step['err_id'], 'type'=>'text'];
         }
     }
 
@@ -528,286 +530,271 @@ function lizform_inject_popup() {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 <style id="liz-form-style">
-/* ── reset ── */
-#liz-ov,#liz-ov *{box-sizing:border-box;margin:0;padding:0}
+#liz-overlay,#liz-overlay *{box-sizing:border-box;margin:0;padding:0}
 
-/* ── overlay ── */
-#liz-ov{
+#liz-overlay{
   position:fixed;inset:0;z-index:999999;
-  background:rgba(0,0,0,.82);
+  background:rgba(0,0,0,.88);
   display:flex;align-items:center;justify-content:center;padding:24px;
   opacity:0;visibility:hidden;pointer-events:none;
-  transition:opacity .3s ease,visibility .3s ease;
+  transition:opacity .35s ease,visibility .35s ease;
 }
-#liz-ov.liz-open{opacity:1;visibility:visible;pointer-events:all}
+#liz-overlay.liz-open{opacity:1;visibility:visible;pointer-events:all}
 
-/* ── card ── */
-#liz-card{
-  position:relative;
-  width:100%;max-width:720px;height:660px;
-  overflow:hidden;
-  background:<?= $bg ?>;
-  border:1px solid rgba(255,224,109,.08);
-  flex-shrink:0;
+#liz-modal{
+  position:relative;width:100%;max-width:720px;height:660px;
+  background:<?= $bg ?>;overflow:hidden;
+  border:1px solid rgba(255,224,109,.1);flex-shrink:0;
 }
 
-/* ── X fechar ── */
-#liz-x{
-  position:absolute;top:14px;right:18px;z-index:50;
+#liz-xbtn{
+  position:absolute;top:16px;right:18px;z-index:50;
   background:transparent;border:none;
-  color:rgba(255,255,255,.3);
-  font-size:22px;line-height:1;padding:4px 6px;
-  cursor:pointer;font-family:sans-serif;
-  transition:color .2s;
+  color:rgba(255,255,255,.35);font-size:22px;line-height:1;
+  cursor:pointer;padding:4px 6px;font-family:sans-serif;transition:color .2s;
 }
-#liz-x:hover{color:<?= $ac ?>}
+#liz-xbtn:hover{color:<?= $ac ?>}
 
-/* ── barra progresso ── */
-#liz-prog{
+#liz-pbar{
   position:absolute;top:0;left:0;height:2px;
-  background:<?= $ac ?>;width:0%;
-  transition:width .6s ease;z-index:40;
+  background:<?= $ac ?>;width:0%;transition:width .6s ease;z-index:40;
 }
 
-/* ── ornamentos ── */
-.liz-orn{position:absolute;pointer-events:none;opacity:.035}
+.lf-orn{position:absolute;pointer-events:none;opacity:.04}
 
-/* ── stage ── */
-#liz-stage{position:absolute;inset:0;overflow:hidden}
-
-/* ── steps ── */
-.liz-step{
+.lf-step{
   position:absolute;inset:0;
   display:flex;align-items:center;justify-content:center;
-  padding:48px 52px 36px;overflow-y:auto;
-  opacity:0;transform:translateY(40px);pointer-events:none;
-  transition:opacity .55s ease,transform .55s ease;
+  padding:56px 60px 44px;overflow-y:auto;
+  opacity:0;transform:translateY(36px);pointer-events:none;
+  transition:opacity .5s ease,transform .5s ease;
 }
-.liz-step.active{opacity:1;transform:translateY(0);pointer-events:all}
-.liz-step.exit{opacity:0;transform:translateY(-40px);pointer-events:none}
+.lf-step.active{opacity:1;transform:translateY(0);pointer-events:all}
+.lf-step.exit{opacity:0;transform:translateY(-36px);pointer-events:none}
 
-/* ── box ── */
-.liz-box{width:100%}
+.lf-box{width:100%}
 
-/* ── label ── */
-.liz-label{
+.lf-label{
   font-family:'Open Sans',sans-serif;font-size:11px;font-weight:600;
   letter-spacing:3px;text-transform:uppercase;
-  color:<?= $ac ?>;opacity:.75;margin-bottom:14px;
+  color:<?= $ac ?>;opacity:.7;margin-bottom:12px;
 }
 
-/* ── h2 ── */
-.liz-box h2{
+.lf-box h2{
   font-family:'Playfair Display',serif;
-  font-size:clamp(20px,2.8vw,34px);font-weight:600;line-height:1.25;
+  font-size:clamp(22px,2.8vw,36px);font-weight:600;line-height:1.25;
   color:#fff;margin-bottom:10px;
 }
-.liz-box h2 em{font-style:italic;color:<?= $ac ?>}
+.lf-box h2 em{font-style:italic;color:<?= $ac ?>}
 
-/* ── sub ── */
-.liz-sub{font-family:'Open Sans',sans-serif;font-size:14px;color:rgba(255,255,255,.5);margin-bottom:32px;line-height:1.7}
+.lf-sub{
+  font-family:'Open Sans',sans-serif;font-size:14px;
+  color:rgba(255,255,255,.5);margin-bottom:28px;line-height:1.65;
+}
 
-/* ── inputs ── */
-.liz-input,.liz-textarea{
+.lf-input,.lf-textarea{
   display:block;width:100%;background:transparent;border:none;
-  border-bottom:1.5px solid rgba(255,224,109,.35);
+  border-bottom:1.5px solid rgba(255,224,109,.3);
   color:#fff;font-family:'Open Sans',sans-serif;
-  font-size:20px;padding:10px 0;outline:none;
+  font-size:19px;padding:10px 0;outline:none;
   caret-color:<?= $ac ?>;transition:border-color .3s;
 }
-.liz-input:focus,.liz-textarea:focus{border-bottom-color:<?= $ac ?>}
-.liz-input::placeholder,.liz-textarea::placeholder{color:rgba(255,255,255,.22);font-size:17px}
-.liz-textarea{resize:none;min-height:88px;font-size:17px;line-height:1.7}
+.lf-input:focus,.lf-textarea:focus{border-bottom-color:<?= $ac ?>}
+.lf-input::placeholder,.lf-textarea::placeholder{color:rgba(255,255,255,.2);font-size:16px}
+.lf-textarea{resize:none;min-height:90px;font-size:16px;line-height:1.7}
 
-/* ── erro ── */
-.liz-err{font-family:'Open Sans',sans-serif;font-size:12px;color:#ff7070;margin-top:6px;height:16px;opacity:0;transition:opacity .2s}
-.liz-err.show{opacity:1}
+.lf-err{
+  font-family:'Open Sans',sans-serif;font-size:12px;color:#ff7070;
+  margin-top:6px;height:16px;opacity:0;transition:opacity .2s;
+}
+.lf-err.show{opacity:1}
 
-/* ── ações ── */
-.liz-actions{display:flex;align-items:center;gap:18px;margin-top:22px}
-.liz-btn-ok{
+.lf-actions{display:flex;align-items:center;gap:18px;margin-top:20px}
+
+.lf-ok{
   display:inline-flex;align-items:center;gap:8px;
   background:<?= $ac ?>;color:<?= $bt ?>;border:none;
-  padding:13px 28px;font-family:'Open Sans',sans-serif;
-  font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  padding:12px 26px;font-family:'Open Sans',sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
   cursor:pointer;transition:background .25s,transform .2s;
 }
-.liz-btn-ok:hover{background:#fff;transform:translateY(-2px)}
-.liz-btn-back{
-  background:transparent;border:none;color:rgba(255,255,255,.35);
+.lf-ok:hover{background:#fff;transform:translateY(-2px)}
+
+.lf-back{
+  background:transparent;border:none;color:rgba(255,255,255,.3);
   font-family:'Open Sans',sans-serif;font-size:11px;
   letter-spacing:1.5px;text-transform:uppercase;
   cursor:pointer;transition:color .25s;padding:0;
 }
-.liz-btn-back:hover{color:<?= $ac ?>}
-.liz-hint{margin-top:14px;font-size:11px;color:rgba(255,255,255,.22);display:flex;align-items:center;gap:5px}
-.liz-hint kbd{
-  display:inline-block;background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.15);border-radius:3px;
-  padding:1px 6px;font-family:'Open Sans',sans-serif;font-size:10px;color:rgba(255,255,255,.35);
+.lf-back:hover{color:<?= $ac ?>}
+
+.lf-hint{margin-top:12px;font-size:11px;color:rgba(255,255,255,.2);font-family:'Open Sans',sans-serif}
+.lf-hint kbd{
+  display:inline-block;background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.12);border-radius:3px;
+  padding:1px 5px;font-size:10px;color:rgba(255,255,255,.28);
 }
 
-/* ── welcome ── */
-.liz-welcome-tag{
+.lf-tag{
   font-family:'Open Sans',sans-serif;font-size:10px;font-weight:600;
   letter-spacing:4px;text-transform:uppercase;
-  color:<?= $ac ?>;opacity:.65;margin-bottom:22px;
+  color:<?= $ac ?>;opacity:.6;margin-bottom:18px;
 }
-#liz-step-0 h1{
+#lf0 h1{
   font-family:'Playfair Display',serif;
-  font-size:clamp(26px,3.2vw,46px);font-weight:700;line-height:1.15;
-  color:#fff;margin-bottom:16px;
+  font-size:clamp(28px,3.4vw,48px);font-weight:700;line-height:1.15;
+  color:#fff;margin-bottom:14px;
 }
-#liz-step-0 h1 em{color:<?= $ac ?>;font-style:italic}
-.liz-divider{width:36px;height:1.5px;background:<?= $ac ?>;opacity:.5;margin:16px 0}
-#liz-step-0 p{font-family:'Open Sans',sans-serif;font-size:14px;line-height:1.75;color:rgba(255,255,255,.55);max-width:480px}
-.liz-btn-start{
+#lf0 h1 em{color:<?= $ac ?>;font-style:italic}
+.lf-divider{width:36px;height:1.5px;background:<?= $ac ?>;opacity:.45;margin:14px 0}
+#lf0 p{font-family:'Open Sans',sans-serif;font-size:14px;line-height:1.75;color:rgba(255,255,255,.52)}
+
+.lf-start{
   display:inline-flex;align-items:center;gap:10px;
   background:<?= $ac ?>;color:<?= $bt ?>;border:none;
-  padding:14px 36px;margin-top:20px;
-  font-family:'Open Sans',sans-serif;font-size:12px;font-weight:700;
-  letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;
-  transition:background .25s,transform .2s,box-shadow .25s;
+  padding:14px 36px;margin-top:18px;
+  font-family:'Open Sans',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:2.5px;text-transform:uppercase;
+  cursor:pointer;transition:background .25s,transform .2s,box-shadow .25s;
 }
-.liz-btn-start:hover{background:#fff;transform:translateY(-3px);box-shadow:0 12px 40px rgba(255,224,109,.18)}
+.lf-start:hover{background:#fff;transform:translateY(-3px);box-shadow:0 12px 36px rgba(255,224,109,.15)}
 
-/* ── sucesso ── */
-.liz-icon{
-  width:56px;height:56px;border:1.5px solid <?= $ac ?>;border-radius:50%;
+.lf-icon{
+  width:52px;height:52px;border:1.5px solid <?= $ac ?>;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-size:22px;margin-bottom:24px;color:<?= $ac ?>;
+  font-size:20px;color:<?= $ac ?>;margin-bottom:20px;
 }
-.liz-dots{display:flex;gap:8px;margin-top:28px}
-.liz-dot{width:8px;height:8px;background:<?= $ac ?>;border-radius:50%;animation:lizpulse 1.5s infinite}
-.liz-dot:nth-child(2){animation-delay:.25s}
-.liz-dot:nth-child(3){animation-delay:.5s}
-@keyframes lizpulse{0%,80%,100%{opacity:.25;transform:scale(.7)}40%{opacity:1;transform:scale(1)}}
+.lf-dots{display:flex;gap:8px;margin-top:24px}
+.lf-dot{width:7px;height:7px;background:<?= $ac ?>;border-radius:50%;animation:lfpulse 1.5s infinite}
+.lf-dot:nth-child(2){animation-delay:.25s}
+.lf-dot:nth-child(3){animation-delay:.5s}
+@keyframes lfpulse{0%,80%,100%{opacity:.22;transform:scale(.7)}40%{opacity:1;transform:scale(1)}}
 
-/* ── mobile ── */
 @media(max-width:767px){
-  #liz-ov{padding:0;align-items:flex-end}
-  #liz-card{max-width:100%;height:580px;border:none;border-top:1px solid rgba(255,224,109,.08);border-radius:14px 14px 0 0}
-  .liz-step{padding:44px 26px 28px}
-  .liz-box h2{font-size:clamp(18px,4.8vw,24px)}
-  #liz-step-0 h1{font-size:clamp(24px,7vw,34px);margin-bottom:12px}
-  #liz-step-0 p{font-size:13px}
-  .liz-divider{margin:12px 0}
-  .liz-textarea{min-height:100px}
-  .liz-input{font-size:17px}
-  .liz-btn-start{padding:13px 30px;margin-top:16px}
-  .liz-actions{margin-top:16px}
-  .liz-hint{display:none}
-  .liz-sub{margin-bottom:16px;font-size:13px}
-  .liz-label{margin-bottom:8px}
-  .liz-welcome-tag{margin-bottom:14px}
+  #liz-overlay{padding:16px;align-items:flex-end}
+  #liz-modal{max-width:100%;height:580px;border:none;border-top:1px solid rgba(255,224,109,.1)}
+  .lf-step{padding:52px 26px 28px}
+  .lf-box h2{font-size:clamp(19px,5vw,26px);margin-bottom:8px}
+  #lf0 h1{font-size:clamp(24px,7vw,34px);margin-bottom:10px}
+  #lf0 p{font-size:13px}
+  .lf-divider{margin:10px 0}
+  .lf-tag{margin-bottom:12px}
+  .lf-label{margin-bottom:8px}
+  .lf-sub{margin-bottom:18px;font-size:13px}
+  .lf-textarea{min-height:80px}
+  .lf-input{font-size:17px}
+  .lf-start{padding:13px 30px;margin-top:14px}
+  .lf-actions{margin-top:14px}
+  .lf-hint{display:none}
 }
 </style>
 
-<div id="liz-ov">
-  <div id="liz-card">
-    <button id="liz-x" aria-label="Fechar">&#x2715;</button>
-    <div id="liz-prog"></div>
+<div id="liz-overlay">
+  <div id="liz-modal">
 
-    <svg class="liz-orn" style="top:-160px;right:-160px;width:560px;height:560px;" viewBox="0 0 560 560" fill="none">
-      <circle cx="280" cy="280" r="240" stroke="<?= $ac ?>" stroke-width="1"/>
-      <circle cx="280" cy="280" r="165" stroke="<?= $ac ?>" stroke-width=".6"/>
-      <circle cx="280" cy="280" r="90"  stroke="<?= $ac ?>" stroke-width=".4"/>
-    </svg>
-    <svg class="liz-orn" style="bottom:-80px;left:-80px;width:300px;height:300px;" viewBox="0 0 300 300" fill="none">
-      <circle cx="150" cy="150" r="120" stroke="<?= $ac ?>" stroke-width=".6"/>
-    </svg>
+    <button id="liz-xbtn" aria-label="Fechar">&#x2715;</button>
+    <div id="liz-pbar"></div>
 
-    <div id="liz-stage">
+    <svg class="lf-orn" style="top:-140px;right:-140px;width:500px;height:500px;" viewBox="0 0 500 500" fill="none">
+      <circle cx="250" cy="250" r="210" stroke="<?= $ac ?>" stroke-width="1"/>
+      <circle cx="250" cy="250" r="145" stroke="<?= $ac ?>" stroke-width=".6"/>
+      <circle cx="250" cy="250" r="80"  stroke="<?= $ac ?>" stroke-width=".4"/>
+    </svg>
+    <svg class="lf-orn" style="bottom:-70px;left:-70px;width:260px;height:260px;" viewBox="0 0 260 260" fill="none">
+      <circle cx="130" cy="130" r="105" stroke="<?= $ac ?>" stroke-width=".6"/>
+    </svg>
 
     <?php foreach ( $steps as $si => $step ) :
         $active = $si === 0 ? ' active' : '';
-        $sid    = 'liz-step-' . $si;
     ?>
-    <div class="liz-step<?= $active ?>" id="<?= $sid ?>">
+    <div class="lf-step<?= $active ?>" id="lf<?= $si ?>">
+
     <?php if ( $step['type'] === 'welcome' ) : ?>
-      <div class="liz-box">
-        <div class="liz-welcome-tag"><?= wp_kses( $s['welcome_tag'], ['br'=>[]] ) ?></div>
+      <div class="lf-box">
+        <div class="lf-tag"><?= wp_kses( $s['welcome_tag'], ['br'=>[]] ) ?></div>
         <h1><?= wp_kses( $s['welcome_title'], ['em'=>[],'br'=>[]] ) ?></h1>
-        <div class="liz-divider"></div>
+        <div class="lf-divider"></div>
         <p><?= esc_html( $s['welcome_p1'] ) ?></p>
-        <p style="margin-top:8px"><?= esc_html( $s['welcome_p2'] ) ?></p>
-        <br>
-        <button class="liz-btn-start" onclick="lizNext()">
+        <p style="margin-top:6px"><?= esc_html( $s['welcome_p2'] ) ?></p>
+        <button class="lf-start" onclick="lfNext()">
           <?= esc_html( $s['welcome_btn'] ) ?>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
       </div>
 
     <?php elseif ( $step['type'] === 'field' ) :
-        $f   = $step['def'];
-        $num = str_pad( array_search( $step, array_filter($steps, fn($ss)=>$ss['type']==='field') ) + 1, 2, '0', STR_PAD_LEFT );
-    ?>
-      <div class="liz-box">
-        <div class="liz-label"><?= $si ?> &nbsp;—</div>
-        <h2><?= wp_kses( $s[$f['q']], ['em'=>[],'strong'=>[]] ) ?></h2>
-        <?php if ( $f['sub'] && ! empty($s[$f['sub']]) ) : ?>
-          <p class="liz-sub"><?= esc_html( $s[$f['sub']] ) ?></p>
-        <?php endif; ?>
-        <div>
-          <?php if ( $f['input'] === 'number' ) : ?>
-            <input class="liz-input" type="number" id="lf-<?= $f['key'] ?>" placeholder="<?= esc_attr($f['ph']) ?>" min="1" max="120" <?= $f['ac'] ? 'autocomplete="'.$f['ac'].'"':'' ?>>
-          <?php else : ?>
-            <input class="liz-input" type="<?= $f['input'] ?>" id="lf-<?= $f['key'] ?>" placeholder="<?= esc_attr($f['ph']) ?>" <?= $f['ac'] ? 'autocomplete="'.$f['ac'].'"':'' ?>>
-          <?php endif; ?>
-          <div class="liz-err" id="lerr-<?= $si ?>"><?= esc_html( $f['err'] ) ?></div>
-        </div>
-        <div class="liz-actions">
-          <button class="liz-btn-ok" onclick="lizNext()">OK <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
-          <button class="liz-btn-back" onclick="lizBack()">← Voltar</button>
-        </div>
-        <div class="liz-hint"><kbd>Enter</kbd> para continuar</div>
-      </div>
-
-    <?php elseif ( $step['type'] === 'question' ) :
+        $f       = $step['def'];
+        $num_pad = str_pad( $f['num'], 2, '0', STR_PAD_LEFT );
         $is_last = ( $si === $total );
     ?>
-      <div class="liz-box">
-        <div class="liz-label">Pergunta <?= str_pad($step['num'],2,'0',STR_PAD_LEFT) ?> &nbsp;—</div>
-        <h2><?= wp_kses( $step['text'], ['em'=>[],'strong'=>[]] ) ?></h2>
-        <div>
-          <textarea class="liz-textarea" id="lf-q<?= $step['qi'] ?>" placeholder="Escreva com liberdade..."></textarea>
-          <div class="liz-err" id="lerr-<?= $si ?>">Por favor, responda a pergunta.</div>
-        </div>
-        <div class="liz-actions">
-          <button class="liz-btn-ok" onclick="lizNext()">
+      <div class="lf-box">
+        <div class="lf-label"><?= $num_pad ?> &nbsp;—</div>
+        <h2><?= wp_kses( $s[$f['q']], ['em'=>[],'strong'=>[]] ) ?></h2>
+        <?php if ( $f['sub'] && ! empty( $s[$f['sub']] ) ) : ?>
+          <p class="lf-sub"><?= esc_html( $s[$f['sub']] ) ?></p>
+        <?php endif; ?>
+        <?php if ( $f['input'] === 'number' ) : ?>
+          <input class="lf-input" type="number" id="lf-<?= $f['key'] ?>" placeholder="<?= esc_attr($f['ph']) ?>" min="1" max="120" <?= $f['ac'] ? 'autocomplete="'.$f['ac'].'"' : '' ?>>
+        <?php else : ?>
+          <input class="lf-input" type="<?= $f['input'] ?>" id="lf-<?= $f['key'] ?>" placeholder="<?= esc_attr($f['ph']) ?>" <?= $f['ac'] ? 'autocomplete="'.$f['ac'].'"' : '' ?>>
+        <?php endif; ?>
+        <div class="lf-err" id="<?= $f['err_id'] ?>"><?= esc_html( $f['err'] ) ?></div>
+        <div class="lf-actions">
+          <button class="lf-ok" onclick="lfNext()">
             <?= $is_last ? 'Enviar' : 'OK' ?>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <?php if ($is_last): ?><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/>
               <?php else: ?><path d="M20 6L9 17l-5-5"/><?php endif; ?>
             </svg>
           </button>
-          <button class="liz-btn-back" onclick="lizBack()">← Voltar</button>
+          <button class="lf-back" onclick="lfBack()">← Voltar</button>
         </div>
-        <div class="liz-hint">
+        <div class="lf-hint"><kbd>Enter</kbd> para continuar</div>
+      </div>
+
+    <?php elseif ( $step['type'] === 'question' ) :
+        $q_pad   = str_pad( $step['num'], 2, '0', STR_PAD_LEFT );
+        $is_last = ( $si === $total );
+    ?>
+      <div class="lf-box">
+        <div class="lf-label">Pergunta <?= $q_pad ?> &nbsp;—</div>
+        <h2><?= wp_kses( $step['text'], ['em'=>[],'strong'=>[]] ) ?></h2>
+        <textarea class="lf-textarea" id="lf-q<?= $step['qi'] ?>" placeholder="Escreva com liberdade..."></textarea>
+        <div class="lf-err" id="<?= $step['err_id'] ?>">Por favor, responda a pergunta.</div>
+        <div class="lf-actions">
+          <button class="lf-ok" onclick="lfNext()">
+            <?= $is_last ? 'Enviar' : 'OK' ?>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <?php if ($is_last): ?><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/>
+              <?php else: ?><path d="M20 6L9 17l-5-5"/><?php endif; ?>
+            </svg>
+          </button>
+          <button class="lf-back" onclick="lfBack()">← Voltar</button>
+        </div>
+        <div class="lf-hint">
           <kbd>Shift</kbd>&nbsp;+&nbsp;<kbd>Enter</kbd> nova linha &nbsp;·&nbsp;
           <kbd>Enter</kbd> <?= $is_last ? 'enviar' : 'continuar' ?>
         </div>
       </div>
 
     <?php elseif ( $step['type'] === 'success' ) : ?>
-      <div class="liz-box" style="text-align:center;display:flex;flex-direction:column;align-items:center">
-        <div class="liz-icon">✦</div>
-        <h2>Obrigada, <em id="liz-nome-display">querida</em>.</h2>
-        <p class="liz-sub" style="margin-top:14px;text-align:center">
+      <div class="lf-box" style="display:flex;flex-direction:column;align-items:center;text-align:center">
+        <div class="lf-icon">✦</div>
+        <h2>Obrigada, <em id="lf-nome-ok">querida</em>.</h2>
+        <p style="font-family:'Open Sans',sans-serif;font-size:14px;color:rgba(255,255,255,.5);margin-top:12px;line-height:1.7">
           <?= wp_kses( $s['success_sub'], ['br'=>[],'em'=>[]] ) ?>
         </p>
-        <div class="liz-dots">
-          <div class="liz-dot"></div><div class="liz-dot"></div><div class="liz-dot"></div>
+        <div class="lf-dots">
+          <div class="lf-dot"></div><div class="lf-dot"></div><div class="lf-dot"></div>
         </div>
       </div>
 
     <?php endif; ?>
-    </div><!-- /.liz-step -->
+    </div><!-- /.lf-step -->
     <?php endforeach; ?>
 
-    </div><!-- /#liz-stage -->
-  </div><!-- /#liz-card -->
-</div><!-- /#liz-ov -->
+  </div><!-- /#liz-modal -->
+</div><!-- /#liz-overlay -->
 
 <script id="liz-form-js">
 (function(){
@@ -815,78 +802,59 @@ function lizform_inject_popup() {
   var cur=0, TOTAL=<?= $total ?>, SUCCESS=<?= $success_idx ?>;
   var API='<?= $apiurl ?>', RURL='<?= $rurl ?>', RDEL=<?= $rdel ?>;
   var TC='<?= $cls ?>';
-
   var vmap=<?= json_encode($vmap) ?>;
-
-  /* Quais campos de dados coletar */
   var db_fields=<?= json_encode(
     array_reduce($steps, function($carry, $step){
-      if ($step['type']==='field') { $carry[$step['def']['key']] = $step['def']['db']; }
+      if ($step['type']==='field'){ $carry[$step['def']['key']]=$step['def']['db']; }
       return $carry;
     }, [])
   ) ?>;
 
-  var q_map=<?= json_encode($q_map) ?>; /* qi→stepIdx */
-
   function g(id){return document.getElementById(id);}
 
   function validate(n){
-    var v=vmap[n]; if(!v) return true;
+    var v=vmap[n]; if(!v)return true;
     var el=g(v.el), er=g(v.err);
     var val=(el.value||'').trim();
     if(!val){er.classList.add('show');el.focus();return false;}
     if(v.type==='email'&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){er.classList.add('show');el.focus();return false;}
-    er.classList.remove('show');
-    return true;
+    er.classList.remove('show');return true;
   }
 
   function clearErr(n){var v=vmap[n];if(v)g(v.err).classList.remove('show');}
 
-  function setBar(n){g('liz-prog').style.width=(n===0?0:Math.round(n/TOTAL*100))+'%';}
+  function setBar(n){g('liz-pbar').style.width=(n===0?0:Math.round(n/TOTAL*100))+'%';}
 
   function goTo(next){
-    var c=g('liz-step-'+cur), nx=g('liz-step-'+next);
+    var c=g('lf'+cur), nx=g('lf'+next);
     c.classList.add('exit');c.classList.remove('active');
-    setTimeout(function(){c.classList.remove('exit');},600);
+    setTimeout(function(){c.classList.remove('exit');},560);
     nx.classList.add('active');
     cur=next;setBar(cur);
-    setTimeout(function(){
-      var v=vmap[cur];
-      if(v){var el=g(v.el);if(el)el.focus();}
-    },350);
+    setTimeout(function(){var v=vmap[cur];if(v){var el=g(v.el);if(el)el.focus();}},320);
   }
 
   function reset(){
-    document.querySelectorAll('.liz-step').forEach(function(s){s.classList.remove('active','exit');});
-    g('liz-step-0').classList.add('active');
+    document.querySelectorAll('.lf-step').forEach(function(s){s.classList.remove('active','exit');});
+    g('lf0').classList.add('active');
     cur=0;setBar(0);
     Object.values(vmap).forEach(function(v){
       var el=g(v.el);if(el)el.value='';
       var er=g(v.err);if(er)er.classList.remove('show');
     });
-    /* limpa textareas das perguntas */
     for(var qi=1;qi<=5;qi++){var ta=g('lf-q'+qi);if(ta)ta.value='';}
   }
 
   function submit(){
     goTo(SUCCESS);
-
-    /* Nome display */
     var nomeEl=g('lf-nome');
     var nome=nomeEl?nomeEl.value.trim():'';
-    g('liz-nome-display').textContent=nome.split(' ')[0]||'querida';
+    var nameOk=g('lf-nome-ok');
+    if(nameOk)nameOk.textContent=nome.split(' ')[0]||'querida';
 
-    /* Monta payload */
     var data={};
-    for(var key in db_fields){
-      var el=g('lf-'+key);
-      data[db_fields[key]]=el?el.value.trim():'';
-    }
-    /* Perguntas */
-    for(var qi=1;qi<=5;qi++){
-      var ta=g('lf-q'+qi);
-      data['pergunta_'+qi]=ta?ta.value.trim():'';
-    }
+    for(var key in db_fields){var el=g('lf-'+key);data[db_fields[key]]=el?el.value.trim():'';}
+    for(var qi=1;qi<=5;qi++){var ta=g('lf-q'+qi);data['pergunta_'+qi]=ta?ta.value.trim():'';}
 
     fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
       .catch(function(e){console.warn('[LizForm]',e);});
@@ -894,43 +862,40 @@ function lizform_inject_popup() {
     if(RURL){setTimeout(function(){window.location.href=RURL;},RDEL);}
   }
 
-  window.lizNext=function(){
+  window.lfNext=function(){
     if(cur===0){goTo(1);return;}
     if(!validate(cur))return;
     if(cur===TOTAL){submit();return;}
     goTo(cur+1);
   };
 
-  window.lizBack=function(){
+  window.lfBack=function(){
     if(cur<=1){goTo(0);return;}
     clearErr(cur);
-    var c=g('liz-step-'+cur),p=g('liz-step-'+(cur-1));
+    var c=g('lf'+cur), p=g('lf'+(cur-1));
     c.classList.remove('active');
-    p.style.cssText+='opacity:0;transform:translateY(-40px);';
+    p.style.cssText+='opacity:0;transform:translateY(-36px);';
     p.classList.add('active');
     requestAnimationFrame(function(){requestAnimationFrame(function(){p.style.opacity='';p.style.transform='';});});
     cur--;setBar(cur);
   };
 
-  /* teclado */
   document.addEventListener('keydown',function(e){
-    if(!g('liz-ov').classList.contains('liz-open'))return;
-    if(e.key==='Escape'){closeModal();return;}
-    if(e.key==='Enter'&&e.target.tagName==='INPUT'){e.preventDefault();window.lizNext();return;}
-    if(e.key==='Enter'&&!e.shiftKey&&e.target.tagName==='TEXTAREA'){e.preventDefault();window.lizNext();return;}
+    if(!g('liz-overlay').classList.contains('liz-open'))return;
+    if(e.key==='Escape'){closeLizModal();return;}
+    if(e.key==='Enter'&&e.target.tagName==='INPUT'){e.preventDefault();window.lfNext();return;}
+    if(e.key==='Enter'&&!e.shiftKey&&e.target.tagName==='TEXTAREA'){e.preventDefault();window.lfNext();return;}
     var v=vmap[cur];if(v&&g(v.err))g(v.err).classList.remove('show');
   });
 
-  /* modal */
-  function openModal(){g('liz-ov').classList.add('liz-open');document.body.style.overflow='hidden';}
-  function closeModal(){g('liz-ov').classList.remove('liz-open');document.body.style.overflow='';setTimeout(reset,400);}
+  function openLizModal(){g('liz-overlay').classList.add('liz-open');document.body.style.overflow='hidden';}
+  function closeLizModal(){g('liz-overlay').classList.remove('liz-open');document.body.style.overflow='';setTimeout(reset,400);}
 
-  g('liz-x').addEventListener('click',closeModal);
-  g('liz-ov').addEventListener('click',function(e){if(e.target===this)closeModal();});
+  g('liz-xbtn').addEventListener('click',closeLizModal);
+  g('liz-overlay').addEventListener('click',function(e){if(e.target===this)closeLizModal();});
 
-  /* trigger — qualquer elemento com a classe configurada */
   document.addEventListener('click',function(e){
-    if(e.target.closest('.'+TC)){e.preventDefault();openModal();}
+    if(e.target.closest('.'+TC)){e.preventDefault();openLizModal();}
   });
 
   setBar(0);
