@@ -504,7 +504,7 @@ function lizform_inject_popup() {
 
     $success_idx = count($steps);
     $steps[] = ['type'=>'success'];
-    $total = $success_idx;
+    $total = $success_idx - 1;
 
     // ── Validation map para JS ───────────────────────────
     $vmap = [];
@@ -583,7 +583,7 @@ function lizform_inject_popup() {
 .lf-box h2{
   font-family:'Playfair Display',serif;
   font-size:clamp(22px,2.8vw,36px);font-weight:600;line-height:1.25;
-  color:#fff;margin-bottom:10px;
+  color:#fff;margin-bottom:10px;overflow-wrap:break-word;word-break:break-word;
 }
 .lf-box h2 em{font-style:italic;color:<?= $ac ?>}
 
@@ -613,20 +613,20 @@ function lizform_inject_popup() {
 
 .lf-ok{
   display:inline-flex;align-items:center;gap:10px;
-  background:<?= $ac ?>;color:<?= $bt ?>;border:none;
+  background:<?= $ac ?> !important;color:<?= $bt ?> !important;border:none;
   padding:17px 44px;font-family:'Open Sans',sans-serif;
   font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
   cursor:pointer;transition:background .25s,transform .2s;
 }
-.lf-ok:hover{background:#fff;transform:translateY(-2px)}
+.lf-ok:hover{background:#fff !important;transform:translateY(-2px)}
 
 .lf-back{
-  background:transparent;border:none;color:rgba(255,255,255,.3);
+  background:transparent !important;border:none;color:rgba(255,255,255,.3) !important;
   font-family:'Open Sans',sans-serif;font-size:11px;
   letter-spacing:1.5px;text-transform:uppercase;
   cursor:pointer;transition:color .25s;padding:16px 0;
 }
-.lf-back:hover{color:<?= $ac ?>}
+.lf-back:hover{color:<?= $ac ?> !important}
 
 .lf-hint{margin-top:12px;font-size:11px;color:rgba(255,255,255,.2);font-family:'Open Sans',sans-serif}
 .lf-hint kbd{
@@ -643,7 +643,7 @@ function lizform_inject_popup() {
 #lf0 h1{
   font-family:'Playfair Display',serif;
   font-size:clamp(28px,3.4vw,48px);font-weight:700;line-height:1.15;
-  color:#fff;margin-bottom:14px;
+  color:#fff;margin-bottom:14px;overflow-wrap:break-word;word-break:break-word;
 }
 #lf0 h1 em{color:<?= $ac ?>;font-style:italic}
 .lf-divider{width:36px;height:1.5px;background:<?= $ac ?>;opacity:.45;margin:14px 0}
@@ -651,13 +651,13 @@ function lizform_inject_popup() {
 
 .lf-start{
   display:inline-flex;align-items:center;gap:12px;
-  background:<?= $ac ?>;color:<?= $bt ?>;border:none;
+  background:<?= $ac ?> !important;color:<?= $bt ?> !important;border:none;
   padding:18px 54px;margin-top:40px;
   font-family:'Open Sans',sans-serif;font-size:11px;font-weight:700;
   letter-spacing:2.5px;text-transform:uppercase;
   cursor:pointer;transition:background .25s,transform .2s,box-shadow .25s;
 }
-.lf-start:hover{background:#fff;transform:translateY(-3px);box-shadow:0 12px 36px rgba(255,224,109,.15)}
+.lf-start:hover{background:#fff !important;transform:translateY(-3px);box-shadow:0 12px 36px rgba(255,224,109,.15)}
 
 .lf-icon{
   width:52px;height:52px;border:1.5px solid <?= $ac ?>;border-radius:50%;
