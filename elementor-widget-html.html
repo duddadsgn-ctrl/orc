@@ -1,0 +1,550 @@
+<!-- ============================================================
+     FORMULÁRIO (R)EVOLUÇÃO DA PALAVRA — Liz Maria
+     Cole este código em: Elementor > Widget HTML
+
+     ANTES DE PUBLICAR:
+       1. Vá em https://formspree.io → crie conta gratuita
+       2. Crie um "New Form" → copie o ID (ex: xpwzqkrb)
+       3. Substitua  SEU_FORMSPREE_ID  na linha marcada abaixo
+============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+/* ── Reset dentro do widget ── */
+#liz-form * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Wrapper ── */
+#liz-form {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: #0A0A0A;
+  overflow: hidden;
+  font-family: 'Open Sans', sans-serif;
+  color: #fff;
+}
+
+/* ── Barra de progresso ── */
+#liz-form .lf-bar {
+  position: absolute;
+  top: 0; left: 0;
+  height: 2px;
+  background: #FFE06D;
+  width: 0%;
+  transition: width 0.6s ease;
+  z-index: 10;
+}
+
+/* ── Steps ── */
+#liz-form .lf-step {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 28px 60px;
+  opacity: 0;
+  transform: translateY(40px);
+  pointer-events: none;
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+#liz-form .lf-step.active  { opacity: 1; transform: translateY(0);    pointer-events: all; }
+#liz-form .lf-step.exit    { opacity: 0; transform: translateY(-40px); pointer-events: none; }
+
+/* ── Content box ── */
+#liz-form .lf-box { width: 100%; max-width: 660px; }
+
+/* ── Labels ── */
+#liz-form .lf-label {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: #FFE06D; opacity: 0.75; margin-bottom: 14px;
+}
+
+/* ── H2 ── */
+#liz-form h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(24px, 4vw, 44px);
+  font-weight: 600; line-height: 1.25;
+  color: #fff; margin-bottom: 10px;
+}
+#liz-form h2 em { font-style: italic; color: #FFE06D; }
+
+/* ── Sub ── */
+#liz-form .lf-sub {
+  font-size: 14px; color: rgba(255,255,255,0.5);
+  margin-bottom: 30px; line-height: 1.7;
+}
+
+/* ── Inputs ── */
+#liz-form .lf-input,
+#liz-form .lf-textarea {
+  display: block; width: 100%;
+  background: transparent; border: none;
+  border-bottom: 1.5px solid rgba(255,224,109,0.35);
+  color: #fff;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 19px; padding: 10px 0;
+  outline: none; caret-color: #FFE06D;
+  transition: border-color 0.3s;
+}
+#liz-form .lf-input:focus,
+#liz-form .lf-textarea:focus { border-bottom-color: #FFE06D; }
+#liz-form .lf-input::placeholder,
+#liz-form .lf-textarea::placeholder { color: rgba(255,255,255,0.22); font-size: 16px; }
+#liz-form .lf-textarea { resize: none; min-height: 110px; font-size: 16px; line-height: 1.7; }
+
+/* ── Error ── */
+#liz-form .lf-err {
+  font-size: 12px; color: #ff7070;
+  margin-top: 6px; height: 16px;
+  opacity: 0; transition: opacity 0.2s;
+}
+#liz-form .lf-err.show { opacity: 1; }
+
+/* ── Buttons ── */
+#liz-form .lf-actions { display: flex; align-items: center; gap: 18px; margin-top: 22px; }
+
+#liz-form .lf-ok {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #FFE06D; color: #0A0A0A; border: none;
+  padding: 13px 28px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer; transition: background 0.25s, transform 0.2s;
+}
+#liz-form .lf-ok:hover { background: #fff; transform: translateY(-2px); }
+
+#liz-form .lf-back {
+  background: transparent; border: none;
+  color: rgba(255,255,255,0.35);
+  font-family: 'Open Sans', sans-serif;
+  font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+  cursor: pointer; transition: color 0.25s; padding: 0;
+}
+#liz-form .lf-back:hover { color: #FFE06D; }
+
+#liz-form .lf-hint { margin-top: 14px; font-size: 11px; color: rgba(255,255,255,0.22); }
+#liz-form .lf-hint kbd {
+  display: inline-block;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 3px; padding: 1px 6px;
+  font-family: 'Open Sans', sans-serif; font-size: 10px; color: rgba(255,255,255,0.3);
+}
+
+/* ── Welcome ── */
+#liz-form .lf-tag {
+  font-size: 10px; font-weight: 600; letter-spacing: 4px;
+  text-transform: uppercase; color: #FFE06D; opacity: 0.65; margin-bottom: 22px;
+}
+#liz-form #lf0 h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 5.5vw, 64px);
+  font-weight: 700; line-height: 1.15;
+  color: #fff; margin-bottom: 22px;
+}
+#liz-form #lf0 h1 em { color: #FFE06D; font-style: italic; }
+#liz-form .lf-divider { width: 40px; height: 1.5px; background: #FFE06D; opacity: 0.5; margin: 22px 0; }
+#liz-form #lf0 p { font-size: 15px; line-height: 1.85; color: rgba(255,255,255,0.55); max-width: 480px; }
+
+#liz-form .lf-start {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: #FFE06D; color: #0A0A0A; border: none;
+  padding: 17px 42px; margin-top: 32px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+  cursor: pointer; transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
+}
+#liz-form .lf-start:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 12px 40px rgba(255,224,109,0.18); }
+
+/* ── Success ── */
+#liz-form .lf-icon {
+  width: 56px; height: 56px;
+  border: 1.5px solid #FFE06D; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: 24px; color: #FFE06D;
+}
+#liz-form .lf-dots { display: flex; gap: 8px; margin-top: 28px; }
+#liz-form .lf-dot { width: 8px; height: 8px; background: #FFE06D; border-radius: 50%; animation: lf-pulse 1.5s infinite; }
+#liz-form .lf-dot:nth-child(2) { animation-delay: .25s; }
+#liz-form .lf-dot:nth-child(3) { animation-delay: .5s; }
+@keyframes lf-pulse {
+  0%, 80%, 100% { opacity: .25; transform: scale(.7); }
+  40%           { opacity: 1;   transform: scale(1); }
+}
+
+/* ── Ornamento ── */
+#liz-form .lf-orn { position: absolute; pointer-events: none; opacity: 0.035; }
+
+@media (max-width: 600px) {
+  #liz-form .lf-step { padding: 70px 20px 50px; }
+  #liz-form .lf-start { padding: 15px 30px; }
+}
+</style>
+
+<div id="liz-form">
+  <div class="lf-bar" id="lfBar"></div>
+
+  <!-- Ornamentos -->
+  <svg class="lf-orn" style="top:-160px;right:-160px;width:560px;height:560px;" viewBox="0 0 560 560" fill="none">
+    <circle cx="280" cy="280" r="240" stroke="#FFE06D" stroke-width="1"/>
+    <circle cx="280" cy="280" r="165" stroke="#FFE06D" stroke-width=".6"/>
+    <circle cx="280" cy="280" r="90"  stroke="#FFE06D" stroke-width=".4"/>
+  </svg>
+  <svg class="lf-orn" style="bottom:-80px;left:-80px;width:300px;height:300px;" viewBox="0 0 300 300" fill="none">
+    <circle cx="150" cy="150" r="120" stroke="#FFE06D" stroke-width=".6"/>
+  </svg>
+
+  <!-- ── Step 0 — Boas-vindas ── -->
+  <div class="lf-step active" id="lf0">
+    <div class="lf-box">
+      <div class="lf-tag">Liz Maria &nbsp;·&nbsp; (R)Evolução da Palavra</div>
+      <h1>Uma jornada começa<br>com <em>uma escolha.</em></h1>
+      <div class="lf-divider"></div>
+      <p>Antes de prosseguirmos, quero te conhecer de verdade.</p>
+      <p style="margin-top:8px;">Responda com honestidade — isso é o que torna tudo possível.</p>
+      <br>
+      <button class="lf-start" onclick="lfNext()">
+        Começar
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Step 1 — Nome ── -->
+  <div class="lf-step" id="lf1">
+    <div class="lf-box">
+      <div class="lf-label">01 &nbsp;—</div>
+      <h2>Qual é o seu <em>nome completo?</em></h2>
+      <div>
+        <input class="lf-input" type="text" id="lf-nome" placeholder="Escreva seu nome aqui..." autocomplete="name">
+        <div class="lf-err" id="lerr-nome">Por favor, informe seu nome completo.</div>
+      </div>
+      <div class="lf-actions">
+        <button class="lf-ok" onclick="lfNext()">OK <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+        <button class="lf-back" onclick="lfBack()">← Voltar</button>
+      </div>
+      <div class="lf-hint"><kbd>Enter</kbd> para continuar</div>
+    </div>
+  </div>
+
+  <!-- ── Step 2 — Instagram ── -->
+  <div class="lf-step" id="lf2">
+    <div class="lf-box">
+      <div class="lf-label">02 &nbsp;—</div>
+      <h2>Qual é o seu <em>Instagram?</em></h2>
+      <p class="lf-sub">Pode colocar o @ ou apenas o usuário.</p>
+      <div>
+        <input class="lf-input" type="text" id="lf-insta" placeholder="@seuperfil">
+        <div class="lf-err" id="lerr-insta">Por favor, informe seu Instagram.</div>
+      </div>
+      <div class="lf-actions">
+        <button class="lf-ok" onclick="lfNext()">OK <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+        <button class="lf-back" onclick="lfBack()">← Voltar</button>
+      </div>
+      <div class="lf-hint"><kbd>Enter</kbd> para continuar</div>
+    </div>
+  </div>
+
+  <!-- ── Step 3 — E-mail ── -->
+  <div class="lf-step" id="lf3">
+    <div class="lf-box">
+      <div class="lf-label">03 &nbsp;—</div>
+      <h2>Qual é o seu <em>e-mail?</em></h2>
+      <div>
+        <input class="lf-input" type="email" id="lf-email" placeholder="seuemail@exemplo.com" autocomplete="email">
+        <div class="lf-err" id="lerr-email">Por favor, informe um e-mail válido.</div>
+      </div>
+      <div class="lf-actions">
+        <button class="lf-ok" onclick="lfNext()">OK <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+        <button class="lf-back" onclick="lfBack()">← Voltar</button>
+      </div>
+      <div class="lf-hint"><kbd>Enter</kbd> para continuar</div>
+    </div>
+  </div>
+
+  <!-- ── Step 4 — Cidade ── -->
+  <div class="lf-step" id="lf4">
+    <div class="lf-box">
+      <div class="lf-label">04 &nbsp;—</div>
+      <h2>De onde você é? <em>Cidade e Estado.</em></h2>
+      <div>
+        <input class="lf-input" type="text" id="lf-cidade" placeholder="Ex: São Paulo, SP">
+        <div class="lf-err" id="lerr-cidade">Por favor, informe sua cidade e estado.</div>
+      </div>
+      <div class="lf-actions">
+        <button class="lf-ok" onclick="lfNext()">OK <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+        <button class="lf-back" onclick="lfBack()">← Voltar</button>
+      </div>
+      <div class="lf-hint"><kbd>Enter</kbd> para continuar</div>
+    </div>
+  </div>
+
+  <!-- ── Step 5 — Idade ── -->
+  <div class="lf-step" id="lf5">
+    <div class="lf-box">
+      <div class="lf-label">05 &nbsp;—</div>
+      <h2>Qual é a sua <em>idade?</em></h2>
+      <div>
+        <input class="lf-input" type="number" id="lf-idade" placeholder="Sua idade" min="1" max="120">
+        <div class="lf-err" id="lerr-idade">Por favor, informe sua idade.</div>
+      </div>
+      <div class="lf-actions">
+        <button class="lf-ok" onclick="lfNext()">OK <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+        <button class="lf-back" onclick="lfBack()">← Voltar</button>
+      </div>
+      <div class="lf-hint"><kbd>Enter</kbd> para continuar</div>
+    </div>
+  </div>
+
+  <!-- ── Step 6 — Profissão ── -->
+  <div class="lf-step" id="lf6">
+    <div class="lf-box">
+      <div class="lf-label">06 &nbsp;—</div>
+      <h2>Qual é a sua <em>profissão</em> ou área de atuação?</h2>
+      <div>
+        <input class="lf-input" type="text" id="lf-profissao" placeholder="Ex: Empreendedora, Professora, Terapeuta...">
+        <div class="lf-err" id="lerr-profissao">Por favor, informe sua profissão.</div>
+      </div>
+      <div class="lf-actions">
+        <button class="lf-ok" onclick="lfNext()">OK <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+        <button class="lf-back" onclick="lfBack()">← Voltar</button>
+      </div>
+      <div class="lf-hint"><kbd>Enter</kbd> para continuar</div>
+    </div>
+  </div>
+
+  <!-- ── Step 7 — Pergunta 1 ── -->
+  <div class="lf-step" id="lf7">
+    <div class="lf-box">
+      <div class="lf-label">Pergunta 01 &nbsp;—</div>
+      <h2>O que mais te <em>incomoda</em> na forma como você vive hoje?</h2>
+      <div>
+        <textarea class="lf-textarea" id="lf-q1" placeholder="Escreva com liberdade..."></textarea>
+        <div class="lf-err" id="lerr-q1">Por favor, responda a pergunta.</div>
+      </div>
+      <div class="lf-actions">
+        <button class="lf-ok" onclick="lfNext()">OK <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+        <button class="lf-back" onclick="lfBack()">← Voltar</button>
+      </div>
+      <div class="lf-hint"><kbd>Shift</kbd>&nbsp;+&nbsp;<kbd>Enter</kbd> nova linha &nbsp;·&nbsp; <kbd>Enter</kbd> continuar</div>
+    </div>
+  </div>
+
+  <!-- ── Step 8 — Pergunta 2 ── -->
+  <div class="lf-step" id="lf8">
+    <div class="lf-box">
+      <div class="lf-label">Pergunta 02 &nbsp;—</div>
+      <h2>O que você percebe que continua <em>se repetindo</em> na sua vida, mesmo depois de muitos esforços para mudar?</h2>
+      <div>
+        <textarea class="lf-textarea" id="lf-q2" placeholder="Escreva com liberdade..."></textarea>
+        <div class="lf-err" id="lerr-q2">Por favor, responda a pergunta.</div>
+      </div>
+      <div class="lf-actions">
+        <button class="lf-ok" onclick="lfNext()">OK <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+        <button class="lf-back" onclick="lfBack()">← Voltar</button>
+      </div>
+      <div class="lf-hint"><kbd>Shift</kbd>&nbsp;+&nbsp;<kbd>Enter</kbd> nova linha &nbsp;·&nbsp; <kbd>Enter</kbd> continuar</div>
+    </div>
+  </div>
+
+  <!-- ── Step 9 — Pergunta 3 ── -->
+  <div class="lf-step" id="lf9">
+    <div class="lf-box">
+      <div class="lf-label">Pergunta 03 &nbsp;—</div>
+      <h2>Qual <em>livro, frase ou experiência</em> mais mudou sua forma de enxergar a si mesma?</h2>
+      <div>
+        <textarea class="lf-textarea" id="lf-q3" placeholder="Escreva com liberdade..."></textarea>
+        <div class="lf-err" id="lerr-q3">Por favor, responda a pergunta.</div>
+      </div>
+      <div class="lf-actions">
+        <button class="lf-ok" onclick="lfNext()">OK <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+        <button class="lf-back" onclick="lfBack()">← Voltar</button>
+      </div>
+      <div class="lf-hint"><kbd>Shift</kbd>&nbsp;+&nbsp;<kbd>Enter</kbd> nova linha &nbsp;·&nbsp; <kbd>Enter</kbd> continuar</div>
+    </div>
+  </div>
+
+  <!-- ── Step 10 — Pergunta 4 ── -->
+  <div class="lf-step" id="lf10">
+    <div class="lf-box">
+      <div class="lf-label">Pergunta 04 &nbsp;—</div>
+      <h2>O que te fez se interessar pelo <em>(R)Evolução da Palavra?</em></h2>
+      <div>
+        <textarea class="lf-textarea" id="lf-q4" placeholder="Escreva com liberdade..."></textarea>
+        <div class="lf-err" id="lerr-q4">Por favor, responda a pergunta.</div>
+      </div>
+      <div class="lf-actions">
+        <button class="lf-ok" onclick="lfNext()">OK <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+        <button class="lf-back" onclick="lfBack()">← Voltar</button>
+      </div>
+      <div class="lf-hint"><kbd>Shift</kbd>&nbsp;+&nbsp;<kbd>Enter</kbd> nova linha &nbsp;·&nbsp; <kbd>Enter</kbd> continuar</div>
+    </div>
+  </div>
+
+  <!-- ── Step 11 — Pergunta 5 ── -->
+  <div class="lf-step" id="lf11">
+    <div class="lf-box">
+      <div class="lf-label">Pergunta 05 &nbsp;—</div>
+      <h2>Se nada mudar nos próximos anos, o que você <em>teme</em> que aconteça com a sua vida?</h2>
+      <div>
+        <textarea class="lf-textarea" id="lf-q5" placeholder="Escreva com liberdade..."></textarea>
+        <div class="lf-err" id="lerr-q5">Por favor, responda a pergunta.</div>
+      </div>
+      <div class="lf-actions">
+        <button class="lf-ok" onclick="lfNext()">
+          Enviar
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+        </button>
+        <button class="lf-back" onclick="lfBack()">← Voltar</button>
+      </div>
+      <div class="lf-hint"><kbd>Shift</kbd>&nbsp;+&nbsp;<kbd>Enter</kbd> nova linha &nbsp;·&nbsp; <kbd>Enter</kbd> enviar</div>
+    </div>
+  </div>
+
+  <!-- ── Step 12 — Sucesso ── -->
+  <div class="lf-step" id="lf12">
+    <div class="lf-box" style="text-align:center;display:flex;flex-direction:column;align-items:center;">
+      <div class="lf-icon">✦</div>
+      <h2>Obrigada, <em id="lf-nome-ok">querida</em>.</h2>
+      <p class="lf-sub" style="margin-top:14px;text-align:center;">
+        Suas respostas chegaram com muito cuidado.<br>
+        Você será redirecionada para finalizar sua inscrição...
+      </p>
+      <div class="lf-dots">
+        <div class="lf-dot"></div>
+        <div class="lf-dot"></div>
+        <div class="lf-dot"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /#liz-form -->
+
+<script>
+(function () {
+  'use strict';
+
+  var cur   = 0;
+  var TOTAL = 12;
+
+  var vmap = {
+    1:  { id:'lf-nome',     err:'lerr-nome',     type:'text' },
+    2:  { id:'lf-insta',    err:'lerr-insta',    type:'text' },
+    3:  { id:'lf-email',    err:'lerr-email',    type:'email' },
+    4:  { id:'lf-cidade',   err:'lerr-cidade',   type:'text' },
+    5:  { id:'lf-idade',    err:'lerr-idade',    type:'text' },
+    6:  { id:'lf-profissao',err:'lerr-profissao',type:'text' },
+    7:  { id:'lf-q1',       err:'lerr-q1',       type:'text' },
+    8:  { id:'lf-q2',       err:'lerr-q2',       type:'text' },
+    9:  { id:'lf-q3',       err:'lerr-q3',       type:'text' },
+    10: { id:'lf-q4',       err:'lerr-q4',       type:'text' },
+    11: { id:'lf-q5',       err:'lerr-q5',       type:'text' }
+  };
+
+  function validate (n) {
+    var v = vmap[n]; if (!v) return true;
+    var el = document.getElementById(v.id);
+    var er = document.getElementById(v.err);
+    var val = el.value.trim();
+    if (!val) { er.classList.add('show'); el.focus(); return false; }
+    if (v.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+      er.classList.add('show'); el.focus(); return false;
+    }
+    er.classList.remove('show');
+    return true;
+  }
+
+  function clearErr (n) {
+    var v = vmap[n]; if (!v) return;
+    document.getElementById(v.err).classList.remove('show');
+  }
+
+  function setBar (n) {
+    var pct = n === 0 ? 0 : Math.round((n / TOTAL) * 100);
+    document.getElementById('lfBar').style.width = pct + '%';
+  }
+
+  function goTo (next) {
+    var c = document.getElementById('lf' + cur);
+    var n = document.getElementById('lf' + next);
+    c.classList.add('exit'); c.classList.remove('active');
+    setTimeout(function () { c.classList.remove('exit'); }, 600);
+    n.classList.add('active');
+    cur = next; setBar(cur);
+    setTimeout(function () {
+      var v = vmap[cur];
+      if (v) { var el = document.getElementById(v.id); if (el) el.focus(); }
+    }, 350);
+  }
+
+  function submit () {
+    goTo(TOTAL);
+    var nome  = document.getElementById('lf-nome').value.trim();
+    document.getElementById('lf-nome-ok').textContent = nome.split(' ')[0] || 'querida';
+
+    var data = {
+      nome:      document.getElementById('lf-nome').value.trim(),
+      instagram: document.getElementById('lf-insta').value.trim(),
+      email:     document.getElementById('lf-email').value.trim(),
+      cidade:    document.getElementById('lf-cidade').value.trim(),
+      idade:     document.getElementById('lf-idade').value.trim(),
+      profissao: document.getElementById('lf-profissao').value.trim(),
+      pergunta_1_incomoda:      document.getElementById('lf-q1').value.trim(),
+      pergunta_2_repeticao:     document.getElementById('lf-q2').value.trim(),
+      pergunta_3_transformacao: document.getElementById('lf-q3').value.trim(),
+      pergunta_4_interesse:     document.getElementById('lf-q4').value.trim(),
+      pergunta_5_temor:         document.getElementById('lf-q5').value.trim()
+    };
+
+    // ══════════════════════════════════════════════════════
+    //  CONFIGURE AQUI → substitua SEU_FORMSPREE_ID
+    //  1. Acesse https://formspree.io e crie conta grátis
+    //  2. Crie um "New Form" → copie o ID (ex: xpwzqkrb)
+    //  3. Cole o ID abaixo
+    // ══════════════════════════════════════════════════════
+    fetch('https://formspree.io/f/SEU_FORMSPREE_ID', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body:    JSON.stringify(data)
+    }).catch(function (e) { console.warn('Envio:', e); });
+
+    setTimeout(function () {
+      window.location.href = 'https://pay.unicred.com.br/p/33d529a8c45245fd9f3354ce4e215401';
+    }, 3200);
+  }
+
+  window.lfNext = function () {
+    if (cur === 0)              { goTo(1); return; }
+    if (!validate(cur))         return;
+    if (cur === TOTAL - 1)      { submit(); return; }
+    goTo(cur + 1);
+  };
+
+  window.lfBack = function () {
+    if (cur <= 1) { goTo(0); return; }
+    clearErr(cur);
+    var c = document.getElementById('lf' + cur);
+    var p = document.getElementById('lf' + (cur - 1));
+    c.classList.remove('active');
+    p.style.cssText += 'opacity:0;transform:translateY(-40px);';
+    p.classList.add('active');
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { p.style.opacity = ''; p.style.transform = ''; });
+    });
+    cur--; setBar(cur);
+  };
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); window.lfNext(); }
+    if (e.key === 'Enter' && !e.shiftKey && e.target.tagName === 'TEXTAREA') { e.preventDefault(); window.lfNext(); }
+    var v = vmap[cur];
+    if (v) document.getElementById(v.err).classList.remove('show');
+  });
+
+  setBar(0);
+}());
+</script>

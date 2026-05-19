@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>(R)Evolução da Palavra · Formulário de Inscrição</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: #0A0A0A;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      color: #fff;
+    }
+
+    /* ── Progress bar ── */
+    #liz-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: #FFE06D;
+      width: 0%;
+      transition: width 0.6s ease;
+      z-index: 100;
+    }
+
+    /* ── Stage ── */
+    #liz-stage {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    /* ── Steps ── */
+    .liz-step {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px 60px;
+      opacity: 0;
+      transform: translateY(40px);
+      pointer-events: none;
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .liz-step.active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .liz-step.exit {
+      opacity: 0;
+      transform: translateY(-40px);
+      pointer-events: none;
+    }
+
+    /* ── Content box ── */
+    .liz-box {
+      width: 100%;
+      max-width: 660px;
+    }
+
+    /* ── Step number ── */
+    .liz-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #FFE06D;
+      opacity: 0.75;
+      margin-bottom: 14px;
+    }
+
+    /* ── Question ── */
+    .liz-step h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(26px, 4.5vw, 46px);
+      font-weight: 600;
+      line-height: 1.25;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .liz-step h2 em {
+      font-style: italic;
+      color: #FFE06D;
+    }
+
+    .liz-sub {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 32px;
+      line-height: 1.7;
+    }
+
+    /* ── Inputs ── */
+    .liz-field {
+      margin-bottom: 6px;
+    }
+
+    .liz-input,
+    .liz-textarea {
+      display: block;
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1.5px solid rgba(255,224,109,0.35);
+      color: #fff;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 20px;
+      padding: 10px 0;
+      outline: none;
+      caret-color: #FFE06D;
+      transition: border-color 0.3s;
+    }
+
+    .liz-input:focus,
+    .liz-textarea:focus {
+      border-bottom-color: #FFE06D;
+    }
+
+    .liz-input::placeholder,
+    .liz-textarea::placeholder {
+      color: rgba(255,255,255,0.22);
+      font-size: 17px;
+    }
+
+    .liz-textarea {
+      resize: none;
+      min-height: 110px;
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    /* ── Error ── */
+    .liz-err {
+      font-size: 12px;
+      color: #ff7070;
+      margin-top: 6px;
+      height: 16px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .liz-err.show { opacity: 1; }
+
+    /* ── Buttons ── */
+    .liz-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .liz-btn-ok {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFE06D;
+      color: #0A0A0A;
+      border: none;
+      padding: 13px 28px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.25s, transform 0.2s;
+    }
+
+    .liz-btn-ok:hover {
+      background: #fff;
+      transform: translateY(-2px);
+    }
+
+    .liz-btn-back {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.35);
+      font-family: 'Open Sans', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.25s;
+      padding: 0;
+    }
+
+    .liz-btn-back:hover { color: #FFE06D; }
+
+    .liz-hint {
+      margin-top: 14px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.22);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .liz-hint kbd {
+      display: inline-block;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 3px;
+      padding: 1px 6px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 10px;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ── Welcome step ── */
+    .liz-welcome-tag {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #FFE06D;
+      opacity: 0.65;
+      margin-bottom: 22px;
+    }
+
+    #step-0 h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 6vw, 68px);
+      font-weight: 700;
+      line-height: 1.15;
+      color: #fff;
+      margin-bottom: 22px;
+    }
+
+    #step-0 h1 em {
+      color: #FFE06D;
+      font-style: italic;
+    }
+
+    .liz-divider {
+      width: 40px;
+      height: 1.5px;
+      background: #FFE06D;
+      opacity: 0.5;
+      margin: 22px 0;
+    }
+
+    #step-0 p {
+      font-size: 15px;
+      line-height: 1.85;
+      color: rgba(255,255,255,0.55);
+      max-width: 480px;
+    }
+
+    .liz-btn-start {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #FFE06D;
+      color: #0A0A0A;
+      border: none;
+      padding: 17px 42px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 32px;
+      transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
+    }
+
+    .liz-btn-start:hover {
+      background: #fff;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(255,224,109,0.18);
+    }
+
+    /* ── Success step ── */
+    #step-12 .liz-icon {
+      width: 56px;
+      height: 56px;
+      border: 1.5px solid #FFE06D;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 24px;
+      color: #FFE06D;
+    }
+
+    #step-12 h2 { margin-bottom: 12px; }
+
+    .liz-dots {
+      display: flex;
+      gap: 8px;
+      margin-top: 28px;
+    }
+
+    .liz-dot {
+      width: 8px; height: 8px;
+      background: #FFE06D;
+      border-radius: 50%;
+      animation: lizpulse 1.5s infinite;
+    }
+
+    .liz-dot:nth-child(2) { animation-delay: 0.25s; }
+    .liz-dot:nth-child(3) { animation-delay: 0.5s; }
+
+    @keyframes lizpulse {
+      0%, 80%, 100% { opacity: 0.25; transform: scale(0.7); }
+      40%           { opacity: 1;    transform: scale(1); }
+    }
+
+    /* ── Background ornament ── */
+    .liz-ornament {
+      position: fixed;
+      pointer-events: none;
+      opacity: 0.035;
+    }
+
+    @media (max-width: 600px) {
+      .liz-step { padding: 70px 20px 50px; }
+      .liz-btn-start { padding: 15px 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="liz-progress"></div>
+
+  <!-- Background ornament -->
+  <svg class="liz-ornament" style="top:-160px;right:-160px;width:600px;height:600px;" viewBox="0 0 600 600" fill="none">
+    <circle cx="300" cy="300" r="260" stroke="#FFE06D" stroke-width="1"/>
+    <circle cx="300" cy="300" r="180" stroke="#FFE06D" stroke-width="0.6"/>
+    <circle cx="300" cy="300" r="100" stroke="#FFE06D" stroke-width="0.4"/>
+  </svg>
+  <svg class="liz-ornament" style="bottom:-100px;left:-100px;width:350px;height:350px;" viewBox="0 0 350 350" fill="none">
+    <circle cx="175" cy="175" r="140" stroke="#FFE06D" stroke-width="0.6"/>
+  </svg>
+
+  <div id="liz-stage">
+
+    <!-- ──────── STEP 0 — Boas-vindas ──────── -->
+    <div class="liz-step active" id="step-0">
+      <div class="liz-box">
+        <div class="liz-welcome-tag">Liz Maria &nbsp;·&nbsp; (R)Evolução da Palavra</div>
+        <h1>Uma jornada começa<br>com <em>uma escolha.</em></h1>
+        <div class="liz-divider"></div>
+        <p>Antes de prosseguirmos, quero te conhecer de verdade.</p>
+        <p style="margin-top:8px;">Responda com honestidade — isso é o que torna tudo possível.</p>
+        <br>
+        <button class="liz-btn-start" onclick="lizNext()">
+          Começar
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ──────── STEP 1 — Nome ──────── -->
+    <div class="liz-step" id="step-1">
+      <div class="liz-box">
+        <div class="liz-label">01 &nbsp;—</div>
+        <h2>Qual é o seu <em>nome completo?</em></h2>
+        <div class="liz-field">
+          <input class="liz-input" type="text" id="f-nome" placeholder="Escreva seu nome aqui..." autocomplete="name">
+          <div class="liz-err" id="err-nome">Por favor, informe seu nome completo.</div>
+        </div>
+        <div class="liz-actions">
+          <button class="liz-btn-ok" onclick="lizNext()">OK <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+          <button class="liz-btn-back" onclick="lizBack()">← Voltar</button>
+        </div>
+        <div class="liz-hint"><kbd>Enter</kbd> para continuar</div>
+      </div>
+    </div>
+
+    <!-- ──────── STEP 2 — Instagram ──────── -->
+    <div class="liz-step" id="step-2">
+      <div class="liz-box">
+        <div class="liz-label">02 &nbsp;—</div>
+        <h2>Qual é o seu <em>Instagram?</em></h2>
+        <p class="liz-sub">Pode colocar o @ ou apenas o usuário.</p>
+        <div class="liz-field">
+          <input class="liz-input" type="text" id="f-insta" placeholder="@seuperfil">
+          <div class="liz-err" id="err-insta">Por favor, informe seu Instagram.</div>
+        </div>
+        <div class="liz-actions">
+          <button class="liz-btn-ok" onclick="lizNext()">OK <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+          <button class="liz-btn-back" onclick="lizBack()">← Voltar</button>
+        </div>
+        <div class="liz-hint"><kbd>Enter</kbd> para continuar</div>
+      </div>
+    </div>
+
+    <!-- ──────── STEP 3 — E-mail ──────── -->
+    <div class="liz-step" id="step-3">
+      <div class="liz-box">
+        <div class="liz-label">03 &nbsp;—</div>
+        <h2>Qual é o seu <em>e-mail?</em></h2>
+        <div class="liz-field">
+          <input class="liz-input" type="email" id="f-email" placeholder="seuemail@exemplo.com" autocomplete="email">
+          <div class="liz-err" id="err-email">Por favor, informe um e-mail válido.</div>
+        </div>
+        <div class="liz-actions">
+          <button class="liz-btn-ok" onclick="lizNext()">OK <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+          <button class="liz-btn-back" onclick="lizBack()">← Voltar</button>
+        </div>
+        <div class="liz-hint"><kbd>Enter</kbd> para continuar</div>
+      </div>
+    </div>
+
+    <!-- ──────── STEP 4 — Cidade ──────── -->
+    <div class="liz-step" id="step-4">
+      <div class="liz-box">
+        <div class="liz-label">04 &nbsp;—</div>
+        <h2>De onde você é? <em>Cidade e Estado.</em></h2>
+        <div class="liz-field">
+          <input class="liz-input" type="text" id="f-cidade" placeholder="Ex: São Paulo, SP">
+          <div class="liz-err" id="err-cidade">Por favor, informe sua cidade e estado.</div>
+        </div>
+        <div class="liz-actions">
+          <button class="liz-btn-ok" onclick="lizNext()">OK <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+          <button class="liz-btn-back" onclick="lizBack()">← Voltar</button>
+        </div>
+        <div class="liz-hint"><kbd>Enter</kbd> para continuar</div>
+      </div>
+    </div>
+
+    <!-- ──────── STEP 5 — Idade ──────── -->
+    <div class="liz-step" id="step-5">
+      <div class="liz-box">
+        <div class="liz-label">05 &nbsp;—</div>
+        <h2>Qual é a sua <em>idade?</em></h2>
+        <div class="liz-field">
+          <input class="liz-input" type="number" id="f-idade" placeholder="Sua idade" min="1" max="120">
+          <div class="liz-err" id="err-idade">Por favor, informe sua idade.</div>
+        </div>
+        <div class="liz-actions">
+          <button class="liz-btn-ok" onclick="lizNext()">OK <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+          <button class="liz-btn-back" onclick="lizBack()">← Voltar</button>
+        </div>
+        <div class="liz-hint"><kbd>Enter</kbd> para continuar</div>
+      </div>
+    </div>
+
+    <!-- ──────── STEP 6 — Profissão ──────── -->
+    <div class="liz-step" id="step-6">
+      <div class="liz-box">
+        <div class="liz-label">06 &nbsp;—</div>
+        <h2>Qual é a sua <em>profissão</em> ou área de atuação?</h2>
+        <div class="liz-field">
+          <input class="liz-input" type="text" id="f-profissao" placeholder="Ex: Empreendedora, Professora, Terapeuta...">
+          <div class="liz-err" id="err-profissao">Por favor, informe sua profissão.</div>
+        </div>
+        <div class="liz-actions">
+          <button class="liz-btn-ok" onclick="lizNext()">OK <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+          <button class="liz-btn-back" onclick="lizBack()">← Voltar</button>
+        </div>
+        <div class="liz-hint"><kbd>Enter</kbd> para continuar</div>
+      </div>
+    </div>
+
+    <!-- ──────── STEP 7 — Pergunta 1 ──────── -->
+    <div class="liz-step" id="step-7">
+      <div class="liz-box">
+        <div class="liz-label">Pergunta 01 &nbsp;—</div>
+        <h2>O que mais te <em>incomoda</em> na forma como você vive hoje?</h2>
+        <div class="liz-field">
+          <textarea class="liz-textarea" id="f-q1" placeholder="Escreva com liberdade..."></textarea>
+          <div class="liz-err" id="err-q1">Por favor, responda a pergunta.</div>
+        </div>
+        <div class="liz-actions">
+          <button class="liz-btn-ok" onclick="lizNext()">OK <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+          <button class="liz-btn-back" onclick="lizBack()">← Voltar</button>
+        </div>
+        <div class="liz-hint"><kbd>Shift</kbd>&nbsp;+&nbsp;<kbd>Enter</kbd> para nova linha &nbsp;·&nbsp; <kbd>Enter</kbd> para continuar</div>
+      </div>
+    </div>
+
+    <!-- ──────── STEP 8 — Pergunta 2 ──────── -->
+    <div class="liz-step" id="step-8">
+      <div class="liz-box">
+        <div class="liz-label">Pergunta 02 &nbsp;—</div>
+        <h2>O que você percebe que continua <em>se repetindo</em> na sua vida, mesmo depois de muitos esforços para mudar?</h2>
+        <div class="liz-field">
+          <textarea class="liz-textarea" id="f-q2" placeholder="Escreva com liberdade..."></textarea>
+          <div class="liz-err" id="err-q2">Por favor, responda a pergunta.</div>
+        </div>
+        <div class="liz-actions">
+          <button class="liz-btn-ok" onclick="lizNext()">OK <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+          <button class="liz-btn-back" onclick="lizBack()">← Voltar</button>
+        </div>
+        <div class="liz-hint"><kbd>Shift</kbd>&nbsp;+&nbsp;<kbd>Enter</kbd> para nova linha &nbsp;·&nbsp; <kbd>Enter</kbd> para continuar</div>
+      </div>
+    </div>
+
+    <!-- ──────── STEP 9 — Pergunta 3 ──────── -->
+    <div class="liz-step" id="step-9">
+      <div class="liz-box">
+        <div class="liz-label">Pergunta 03 &nbsp;—</div>
+        <h2>Qual <em>livro, frase ou experiência</em> mais mudou sua forma de enxergar a si mesma?</h2>
+        <div class="liz-field">
+          <textarea class="liz-textarea" id="f-q3" placeholder="Escreva com liberdade..."></textarea>
+          <div class="liz-err" id="err-q3">Por favor, responda a pergunta.</div>
+        </div>
+        <div class="liz-actions">
+          <button class="liz-btn-ok" onclick="lizNext()">OK <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+          <button class="liz-btn-back" onclick="lizBack()">← Voltar</button>
+        </div>
+        <div class="liz-hint"><kbd>Shift</kbd>&nbsp;+&nbsp;<kbd>Enter</kbd> para nova linha &nbsp;·&nbsp; <kbd>Enter</kbd> para continuar</div>
+      </div>
+    </div>
+
+    <!-- ──────── STEP 10 — Pergunta 4 ──────── -->
+    <div class="liz-step" id="step-10">
+      <div class="liz-box">
+        <div class="liz-label">Pergunta 04 &nbsp;—</div>
+        <h2>O que te fez se interessar pelo <em>(R)Evolução da Palavra?</em></h2>
+        <div class="liz-field">
+          <textarea class="liz-textarea" id="f-q4" placeholder="Escreva com liberdade..."></textarea>
+          <div class="liz-err" id="err-q4">Por favor, responda a pergunta.</div>
+        </div>
+        <div class="liz-actions">
+          <button class="liz-btn-ok" onclick="lizNext()">OK <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></button>
+          <button class="liz-btn-back" onclick="lizBack()">← Voltar</button>
+        </div>
+        <div class="liz-hint"><kbd>Shift</kbd>&nbsp;+&nbsp;<kbd>Enter</kbd> para nova linha &nbsp;·&nbsp; <kbd>Enter</kbd> para continuar</div>
+      </div>
+    </div>
+
+    <!-- ──────── STEP 11 — Pergunta 5 ──────── -->
+    <div class="liz-step" id="step-11">
+      <div class="liz-box">
+        <div class="liz-label">Pergunta 05 &nbsp;—</div>
+        <h2>Se nada mudar nos próximos anos, o que você <em>teme</em> que aconteça com a sua vida?</h2>
+        <div class="liz-field">
+          <textarea class="liz-textarea" id="f-q5" placeholder="Escreva com liberdade..."></textarea>
+          <div class="liz-err" id="err-q5">Por favor, responda a pergunta.</div>
+        </div>
+        <div class="liz-actions">
+          <button class="liz-btn-ok" onclick="lizNext()">
+            Enviar
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+          </button>
+          <button class="liz-btn-back" onclick="lizBack()">← Voltar</button>
+        </div>
+        <div class="liz-hint"><kbd>Shift</kbd>&nbsp;+&nbsp;<kbd>Enter</kbd> para nova linha &nbsp;·&nbsp; <kbd>Enter</kbd> para enviar</div>
+      </div>
+    </div>
+
+    <!-- ──────── STEP 12 — Sucesso ──────── -->
+    <div class="liz-step" id="step-12">
+      <div class="liz-box" style="text-align:center; display:flex; flex-direction:column; align-items:center;">
+        <div class="liz-icon">✦</div>
+        <h2>Obrigada, <em id="liz-nome-display">querida</em>.</h2>
+        <p class="liz-sub" style="margin-top:14px; text-align:center;">
+          Suas respostas chegaram com muito cuidado.<br>
+          Você será redirecionada para finalizar sua inscrição...
+        </p>
+        <div class="liz-dots">
+          <div class="liz-dot"></div>
+          <div class="liz-dot"></div>
+          <div class="liz-dot"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /#liz-stage -->
+
+  <script>
+  (function () {
+    'use strict';
+
+    var current = 0;
+    var TOTAL   = 12; // last step index
+
+    // ── Validation map ──
+    var validators = {
+      1:  { id: 'f-nome',     err: 'err-nome',     type: 'text' },
+      2:  { id: 'f-insta',    err: 'err-insta',    type: 'text' },
+      3:  { id: 'f-email',    err: 'err-email',    type: 'email' },
+      4:  { id: 'f-cidade',   err: 'err-cidade',   type: 'text' },
+      5:  { id: 'f-idade',    err: 'err-idade',    type: 'text' },
+      6:  { id: 'f-profissao',err: 'err-profissao',type: 'text' },
+      7:  { id: 'f-q1',       err: 'err-q1',       type: 'text' },
+      8:  { id: 'f-q2',       err: 'err-q2',       type: 'text' },
+      9:  { id: 'f-q3',       err: 'err-q3',       type: 'text' },
+      10: { id: 'f-q4',       err: 'err-q4',       type: 'text' },
+      11: { id: 'f-q5',       err: 'err-q5',       type: 'text' }
+    };
+
+    function validate (step) {
+      var v = validators[step];
+      if (!v) return true;
+
+      var el  = document.getElementById(v.id);
+      var err = document.getElementById(v.err);
+      var val = el.value.trim();
+
+      if (!val) { err.classList.add('show'); el.focus(); return false; }
+
+      if (v.type === 'email') {
+        var ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+        if (!ok) { err.classList.add('show'); el.focus(); return false; }
+      }
+
+      err.classList.remove('show');
+      return true;
+    }
+
+    function clearErr (step) {
+      var v = validators[step];
+      if (!v) return;
+      document.getElementById(v.err).classList.remove('show');
+    }
+
+    function setProgress (n) {
+      var pct = n === 0 ? 0 : Math.round((n / TOTAL) * 100);
+      document.getElementById('liz-progress').style.width = pct + '%';
+    }
+
+    function goTo (next) {
+      var cur = document.getElementById('step-' + current);
+      var nxt = document.getElementById('step-' + next);
+
+      cur.classList.add('exit');
+      cur.classList.remove('active');
+
+      setTimeout(function () { cur.classList.remove('exit'); }, 600);
+
+      nxt.classList.add('active');
+      current = next;
+      setProgress(current);
+
+      // Focus first input
+      setTimeout(function () {
+        var v = validators[current];
+        if (v) { var el = document.getElementById(v.id); if (el) el.focus(); }
+      }, 350);
+    }
+
+    function submit () {
+      goTo(TOTAL);
+
+      // Show first name
+      var nome   = document.getElementById('f-nome').value.trim();
+      var first  = nome.split(' ')[0];
+      document.getElementById('liz-nome-display').textContent = first || 'querida';
+
+      // Collect data
+      var data = {
+        nome:      document.getElementById('f-nome').value.trim(),
+        instagram: document.getElementById('f-insta').value.trim(),
+        email:     document.getElementById('f-email').value.trim(),
+        cidade:    document.getElementById('f-cidade').value.trim(),
+        idade:     document.getElementById('f-idade').value.trim(),
+        profissao: document.getElementById('f-profissao').value.trim(),
+        pergunta1: document.getElementById('f-q1').value.trim(),
+        pergunta2: document.getElementById('f-q2').value.trim(),
+        pergunta3: document.getElementById('f-q3').value.trim(),
+        pergunta4: document.getElementById('f-q4').value.trim(),
+        pergunta5: document.getElementById('f-q5').value.trim()
+      };
+
+      // ── Send to Formspree ──────────────────────────────────────────────
+      // 1. Crie uma conta grátis em https://formspree.io
+      // 2. Crie um novo form e copie o ID (ex: xpwzqkrb)
+      // 3. Substitua SEU_FORMSPREE_ID abaixo pelo seu ID
+      // ──────────────────────────────────────────────────────────────────
+      fetch('https://formspree.io/f/SEU_FORMSPREE_ID', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body:    JSON.stringify(data)
+      }).catch(function (e) { console.warn('Formspree error:', e); });
+
+      // ── Redirect to payment ──
+      setTimeout(function () {
+        window.location.href = 'https://pay.unicred.com.br/p/33d529a8c45245fd9f3354ce4e215401';
+      }, 3200);
+    }
+
+    // ── Public API ──
+    window.lizNext = function () {
+      if (current === 0)    { goTo(1); return; }
+      if (!validate(current)) return;
+      if (current === TOTAL - 1) { submit(); return; }
+      goTo(current + 1);
+    };
+
+    window.lizBack = function () {
+      if (current <= 1) { goTo(0); return; }
+      clearErr(current);
+      var cur = document.getElementById('step-' + current);
+      var prv = document.getElementById('step-' + (current - 1));
+
+      cur.classList.remove('active');
+      prv.style.cssText += 'opacity:0;transform:translateY(-40px);';
+      prv.classList.add('active');
+
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          prv.style.opacity    = '';
+          prv.style.transform  = '';
+        });
+      });
+
+      current--;
+      setProgress(current);
+    };
+
+    // ── Keyboard shortcuts ──
+    document.addEventListener('keydown', function (e) {
+      // Enter on text inputs
+      if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+        e.preventDefault();
+        window.lizNext();
+      }
+      // Enter (without Shift) on textareas
+      if (e.key === 'Enter' && !e.shiftKey && e.target.tagName === 'TEXTAREA') {
+        e.preventDefault();
+        window.lizNext();
+      }
+      // Dismiss error on typing
+      if (validators[current]) {
+        document.getElementById(validators[current].err).classList.remove('show');
+      }
+    });
+
+    // Init
+    setProgress(0);
+
+  }());
+  </script>
+
+</body>
+</html>
