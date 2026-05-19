@@ -21,8 +21,8 @@ function lizform_defaults() {
         /* Trigger */
         'trigger_class'         => 'liz-form-trigger',
         /* Redirect */
-        'redirect_url'          => '',
-        'redirect_delay'        => '3',
+        'redirect_url'          => 'https://pay.unicred.com.br/p/33d529a8c45245fd9f3354ce4e215401',
+        'redirect_delay'        => '2',
         /* Tela inicial */
         'welcome_tag'           => 'Liz Maria &nbsp;·&nbsp; (R)Evolução da Palavra',
         'welcome_title'         => 'Uma jornada começa<br>com <em>uma escolha.</em>',
@@ -60,7 +60,11 @@ function lizform_defaults() {
 }
 
 function lizform_get() {
-    return wp_parse_args( get_option( 'liz_form_settings', [] ), lizform_defaults() );
+    $saved = get_option( 'liz_form_settings', [] );
+    if ( empty( $saved['redirect_url'] ) ) {
+        $saved['redirect_url'] = 'https://pay.unicred.com.br/p/33d529a8c45245fd9f3354ce4e215401';
+    }
+    return wp_parse_args( $saved, lizform_defaults() );
 }
 
 // ═══════════════════════════════════════════════════════
@@ -521,8 +525,8 @@ function lizform_inject_popup() {
     $ac     = esc_attr( $s['accent_color'] );
     $bt     = esc_attr( $s['btn_text_color'] );
     $cls    = esc_js(   $s['trigger_class'] );
-    $rurl   = esc_js(   $s['redirect_url'] );
-    $rdel   = (int)$s['redirect_delay'] * 1000;
+    $rurl   = esc_js( $s['redirect_url'] ?: 'https://pay.unicred.com.br/p/33d529a8c45245fd9f3354ce4e215401' );
+    $rdel   = max( 1500, (int)$s['redirect_delay'] * 1000 );
     $apiurl = esc_js( rest_url('liz-form/v1/submit') );
 
     ?>
@@ -864,7 +868,8 @@ function lizform_inject_popup() {
     fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
       .catch(function(e){console.warn('[LizForm]',e);});
 
-    if(RURL){setTimeout(function(){window.location.href=RURL;},RDEL);}
+    var dest=RURL||'https://pay.unicred.com.br/p/33d529a8c45245fd9f3354ce4e215401';
+    setTimeout(function(){window.location.href=dest;},RDEL);
   }
 
   window.lfNext=function(){
