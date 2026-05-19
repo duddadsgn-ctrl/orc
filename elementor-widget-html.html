@@ -175,16 +175,16 @@
 .lf-err.show { opacity: 1; }
 
 /* ── Ações ── */
-.lf-actions { display: flex; align-items: center; gap: 18px; margin-top: 20px; }
+.lf-actions { display: flex; align-items: center; gap: 24px; margin-top: 32px; }
 
 .lf-ok {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   background: #FFE06D;
   color: #0A0A0A;
   border: none;
-  padding: 12px 26px;
+  padding: 15px 36px;
   font-family: 'Open Sans', sans-serif;
   font-size: 11px;
   font-weight: 700;
@@ -205,7 +205,7 @@
   text-transform: uppercase;
   cursor: pointer;
   transition: color 0.25s;
-  padding: 0;
+  padding: 12px 0;
 }
 .lf-back:hover { color: #FFE06D; }
 
@@ -251,12 +251,12 @@
 .lf-start {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   background: #FFE06D;
   color: #0A0A0A;
   border: none;
-  padding: 14px 36px;
-  margin-top: 18px;
+  padding: 17px 48px;
+  margin-top: 32px;
   font-family: 'Open Sans', sans-serif;
   font-size: 11px;
   font-weight: 700;
@@ -287,31 +287,36 @@
 
 /* ── Mobile ── */
 @media (max-width: 767px) {
-  #liz-overlay { padding: 16px; align-items: flex-end; }
+  #liz-overlay { padding: 0; align-items: flex-end; }
 
   #liz-modal {
     max-width: 100%;
-    height: 580px;
+    height: auto;
+    min-height: 520px;
+    max-height: 92vh;
     border: none;
-    border-top: 1px solid rgba(255,224,109,0.1);
+    border-top: 1px solid rgba(255,224,109,0.12);
+    border-radius: 0;
   }
 
-  .lf-step { padding: 52px 26px 28px; }
+  .lf-step { padding: 48px 28px 36px; align-items: flex-start; }
 
   .lf-box h2 { font-size: clamp(19px, 5vw, 26px); margin-bottom: 8px; }
 
-  #lf0 h1 { font-size: clamp(24px, 7vw, 34px); margin-bottom: 10px; }
+  #lf0 h1 { font-size: clamp(22px, 7vw, 32px); margin-bottom: 10px; }
   #lf0 p { font-size: 13px; }
   .lf-divider { margin: 10px 0; }
   .lf-tag { margin-bottom: 12px; }
   .lf-label { margin-bottom: 8px; }
-  .lf-sub { margin-bottom: 18px; font-size: 13px; }
+  .lf-sub { margin-bottom: 16px; font-size: 13px; }
 
-  .lf-textarea { min-height: 80px; }
+  .lf-textarea { min-height: 88px; }
   .lf-input { font-size: 17px; }
 
-  .lf-start { padding: 13px 30px; margin-top: 14px; }
-  .lf-actions { margin-top: 14px; }
+  .lf-start { padding: 16px 36px; margin-top: 24px; }
+  .lf-actions { margin-top: 28px; gap: 20px; }
+  .lf-ok { padding: 15px 32px; }
+  .lf-back { padding: 14px 0; font-size: 10px; }
   .lf-hint { display: none; }
 }
 </style>
