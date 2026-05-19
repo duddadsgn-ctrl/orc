@@ -577,35 +577,36 @@ function lizform_inject_popup() {
 .lf-label{
   font-family:'Open Sans',sans-serif;font-size:11px;font-weight:600;
   letter-spacing:3px;text-transform:uppercase;
-  color:<?= $ac ?>;opacity:.7;margin-bottom:12px;
+  color:<?= $ac ?>;opacity:.7;margin-bottom:18px;
 }
 
 .lf-box h2{
   font-family:'Playfair Display',serif;
-  font-size:clamp(22px,2.8vw,36px);font-weight:600;line-height:1.25;
-  color:#fff;margin-bottom:10px;overflow-wrap:break-word;word-break:break-word;
+  font-size:clamp(22px,2.8vw,36px);font-weight:600;line-height:1.3;
+  color:#fff;margin-bottom:28px;overflow-wrap:break-word;word-break:break-word;
 }
 .lf-box h2 em{font-style:italic;color:<?= $ac ?>}
 
 .lf-sub{
   font-family:'Open Sans',sans-serif;font-size:14px;
-  color:rgba(255,255,255,.5);margin-bottom:28px;line-height:1.65;
+  color:rgba(255,255,255,.5);margin-bottom:32px;line-height:1.65;
+  margin-top:-16px;
 }
 
 .lf-input,.lf-textarea{
   display:block;width:100%;background:transparent;border:none;
   border-bottom:1.5px solid rgba(255,224,109,.3);
   color:#fff;font-family:'Open Sans',sans-serif;
-  font-size:19px;padding:10px 0;outline:none;
+  font-size:19px;padding:16px 0;outline:none;
   caret-color:<?= $ac ?>;transition:border-color .3s;
 }
 .lf-input:focus,.lf-textarea:focus{border-bottom-color:<?= $ac ?>}
 .lf-input::placeholder,.lf-textarea::placeholder{color:rgba(255,255,255,.2);font-size:16px}
-.lf-textarea{resize:none;min-height:90px;font-size:16px;line-height:1.7}
+.lf-textarea{resize:none;min-height:100px;font-size:16px;line-height:1.7;padding-top:12px}
 
 .lf-err{
   font-family:'Open Sans',sans-serif;font-size:12px;color:#ff7070;
-  margin-top:6px;height:16px;opacity:0;transition:opacity .2s;
+  margin-top:10px;height:16px;opacity:0;transition:opacity .2s;
 }
 .lf-err.show{opacity:1}
 
@@ -638,16 +639,16 @@ function lizform_inject_popup() {
 .lf-tag{
   font-family:'Open Sans',sans-serif;font-size:10px;font-weight:600;
   letter-spacing:4px;text-transform:uppercase;
-  color:<?= $ac ?>;opacity:.6;margin-bottom:18px;
+  color:<?= $ac ?>;opacity:.6;margin-bottom:24px;
 }
 #lf0 h1{
   font-family:'Playfair Display',serif;
   font-size:clamp(28px,3.4vw,48px);font-weight:700;line-height:1.15;
-  color:#fff;margin-bottom:14px;overflow-wrap:break-word;word-break:break-word;
+  color:#fff;margin-bottom:20px;overflow-wrap:break-word;word-break:break-word;
 }
 #lf0 h1 em{color:<?= $ac ?>;font-style:italic}
-.lf-divider{width:36px;height:1.5px;background:<?= $ac ?>;opacity:.45;margin:14px 0}
-#lf0 p{font-family:'Open Sans',sans-serif;font-size:14px;line-height:1.75;color:rgba(255,255,255,.52)}
+.lf-divider{width:36px;height:1.5px;background:<?= $ac ?>;opacity:.45;margin:22px 0}
+#lf0 p{font-family:'Open Sans',sans-serif;font-size:14px;line-height:1.8;color:rgba(255,255,255,.52);margin-bottom:8px}
 
 .lf-start{
   display:inline-flex;align-items:center;gap:12px;
@@ -673,16 +674,17 @@ function lizform_inject_popup() {
 @media(max-width:767px){
   #liz-overlay{padding:0;align-items:flex-end}
   #liz-modal{max-width:100%;height:auto;min-height:540px;max-height:93vh;border:none;border-top:1px solid rgba(255,224,109,.12)}
-  .lf-step{padding:52px 36px 44px}
-  .lf-box h2{font-size:clamp(19px,5vw,26px);margin-bottom:8px}
-  #lf0 h1{font-size:clamp(22px,7vw,32px);margin-bottom:10px}
-  #lf0 p{font-size:13px}
-  .lf-divider{margin:10px 0}
-  .lf-tag{margin-bottom:12px}
-  .lf-label{margin-bottom:8px}
-  .lf-sub{margin-bottom:16px;font-size:13px}
-  .lf-textarea{min-height:88px}
-  .lf-input{font-size:17px}
+  .lf-step{padding:52px 36px 48px}
+  .lf-label{margin-bottom:14px}
+  .lf-box h2{font-size:clamp(19px,5vw,26px);margin-bottom:20px;line-height:1.3}
+  .lf-sub{margin-bottom:24px;font-size:13px;margin-top:-10px}
+  .lf-input{font-size:17px;padding:14px 0}
+  .lf-textarea{min-height:88px;padding-top:10px}
+  .lf-err{margin-top:8px}
+  #lf0 h1{font-size:clamp(22px,7vw,32px);margin-bottom:16px}
+  #lf0 p{font-size:13px;margin-bottom:6px}
+  .lf-divider{margin:16px 0}
+  .lf-tag{margin-bottom:18px}
   .lf-start{padding:17px 44px;margin-top:32px}
   .lf-actions{margin-top:36px;gap:24px}
   .lf-ok{padding:17px 36px}
@@ -829,6 +831,7 @@ function lizform_inject_popup() {
 
   function goTo(next){
     var c=g('lf'+cur), nx=g('lf'+next);
+    if(!c||!nx)return;
     c.classList.add('exit');c.classList.remove('active');
     setTimeout(function(){c.classList.remove('exit');},560);
     nx.classList.add('active');
