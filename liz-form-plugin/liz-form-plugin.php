@@ -455,6 +455,54 @@ function lizform_api_submit( WP_REST_Request $req ) {
         'pergunta_5' => sanitize_textarea_field( $d['pergunta_5'] ?? '' ),
     ]);
     if ( ! $ok ) return new WP_Error( 'db', 'Erro ao salvar.', ['status'=>500] );
+
+    // ── Notificação por e-mail ───────────────────────────
+    $s        = lizform_get();
+    $nome     = sanitize_text_field( $d['nome']      ?? '' );
+    $to       = 'laboratorio@lizmaria.com.br';
+    $subject  = '✦ Nova inscrição — ' . wp_strip_all_tags( $s['welcome_tag'] ) . ' | ' . $nome;
+
+    $q_labels = [];
+    for ( $i = 1; $i <= 5; $i++ ) {
+        if ( ! empty( $s["q{$i}_on"] ) ) {
+            $q_labels[$i] = wp_strip_all_tags( $s["q{$i}_text"] );
+        }
+    }
+
+    $body  = "Nova inscrição recebida via formulário.\n\n";
+    $body .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+    $body .= "DADOS DE IDENTIFICAÇÃO\n";
+    $body .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+
+    if ( ! empty( $s['f_nome_on'] ) )   $body .= "Nome:       " . sanitize_text_field( $d['nome']      ?? '—' ) . "\n";
+    if ( ! empty( $s['f_insta_on'] ) )  $body .= "Instagram:  " . sanitize_text_field( $d['instagram'] ?? '—' ) . "\n";
+    if ( ! empty( $s['f_email_on'] ) )  $body .= "E-mail:     " . sanitize_email(      $d['email']     ?? '—' ) . "\n";
+    if ( ! empty( $s['f_cidade_on'] ) ) $body .= "Cidade/UF:  " . sanitize_text_field( $d['cidade']    ?? '—' ) . "\n";
+    if ( ! empty( $s['f_idade_on'] ) )  $body .= "Idade:      " . sanitize_text_field( $d['idade']     ?? '—' ) . "\n";
+    if ( ! empty( $s['f_prof_on'] ) )   $body .= "Profissão:  " . sanitize_text_field( $d['profissao'] ?? '—' ) . "\n";
+
+    if ( $q_labels ) {
+        $body .= "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        $body .= "RESPOSTAS\n";
+        $body .= "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        foreach ( $q_labels as $qi => $ql ) {
+            $resp  = sanitize_textarea_field( $d['pergunta_' . $qi] ?? '—' );
+            $body .= "\n[Pergunta {$qi}] {$ql}\n→ {$resp}\n";
+        }
+    }
+
+    $body .= "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+    $body .= "Data: " . current_time( 'd/m/Y \à\s H:i' ) . "\n";
+    $body .= "Ver no painel: " . admin_url( 'admin.php?page=liz-form' ) . "\n";
+
+    $headers = [
+        'Content-Type: text/plain; charset=UTF-8',
+        'Reply-To: ' . sanitize_email( $d['email'] ?? '' ),
+    ];
+
+    wp_mail( $to, $subject, $body, $headers );
+    // ── /Notificação ─────────────────────────────────────
+
     return [ 'success' => true, 'id' => $wpdb->insert_id ];
 }
 
